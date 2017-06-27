@@ -1,0 +1,109 @@
+<!-- Reusable launch file for obstacle detection -->
+<launch>
+
+  <arg name="machine" doc="Name of the machine on which the nodes should be started"/>
+
+  <node pkg="obstacle_detector" type="scans_merger_node" name="scans_merger" machine="$(arg machine)">
+    <param name="active"            value="true"/>
+    <param name="publish_scan"      value="true"/>
+    <param name="publish_pcl"       value="false"/>
+
+    <param name="ranges_num"        value="1000"/>
+
+    <param name="min_scanner_range" value="0.05"/>
+    <param name="max_scanner_range" value="10.0"/>
+
+    <param name="min_x_range"       value="-10.0"/>
+    <param name="max_x_range"       value="10.0"/>
+    <param name="min_y_range"       value="-10.0"/>
+    <param name="max_y_range"       value="10.0"/>
+
+    <param name="frame_id"          value="scanners_base"/>
+  </node>
+
+  <node pkg="obstacle_detector" type="obstacle_extractor_node" name="obstacle_extractor" machine="$(arg machine)">
+    <param name="active"               value="false"/>
+    <param name="use_scan"             value="true"/>
+    <param name="use_pcl"              value="false"/>
+    <param name="use_split_and_merge"  value="false"/>
+    <param name="discard_converted_segments" value="true"/>
+    <param name="transform_coordinates"      value="true"/>
+
+    <param name="min_group_points"     value="5"/>
+
+    <param name="max_group_distance"   value="0.1"/>
+    <param name="distance_proportion"  value="0.006136"/>
+    <param name="max_split_distance"   value="0.07"/>
+    <param name="max_merge_separation" value="0.15"/>
+    <param name="max_merge_spread"     value="0.07"/>
+    <param name="max_circle_radius"    value="0.5"/>
+    <param name="radius_enlargement"   value="0.25"/>
+
+    <param name="frame_id"             value="world"/>
+  </node>
+
+  <node pkg="obstacle_detector" type="obstacle_tracker_node" name="obstacle_tracker" machine="$(arg machine)">
+    <param name="active"                  value="false"/>
+
+    <param name="loop_rate"               value="100.0"/>
+    <param name="tracking_duration"       value="2.0"/>
+    <param name="min_correspondence_cost" value="0.6"/>
+    <param name="std_correspondence_dev"  value="0.15"/>
+    <param name="process_variance"        value="0.1"/>  
+    <param name="process_rate_variance"   value="0.1"/>  
+    <param name="measurement_variance"    value="1.0"/> 
+
+    <remap from="tracked_obstacles" to="obstacles"/>
+  </node>
+ 
+  <node pkg="obstacle_detector" type="obstacle_publisher_node" name="obstacle_publisher" machine="$(arg machine)">
+    <param name="active"           value="false"/>
+    <param name="reset"            value="false"/>
+    <param name="fusion_example"   value="false"/>
+    <param name="fission_example"  value="false"/>
+
+    <param name="loop_rate"        value="100.0"/>
+    <param name="radius_margin"    value="0.25"/>
+
+    <param name="frame_id"         value="world"/>
+
+<!--
+    <rosparam param="x_vector">[1.0]</rosparam>
+    <rosparam param="y_vector">[0.0]</rosparam>
+    <rosparam param="r_vector">[0.5]</rosparam>
+    <rosparam param="vx_vector">[0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0]</rosparam>
+
+    <rosparam param="x_vector">[-3.0, 3.0]</rosparam>
+    <rosparam param="y_vector">[0.0, 0.0]</rosparam>
+    <rosparam param="r_vector">[1.0, 1.0]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0]</rosparam>
+
+    <rosparam param="x_vector">[-1.0, 0.0, 1.0]</rosparam>
+    <rosparam param="y_vector">[0.0, -1.0, 0.0]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5, 0.5]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0, 0.0]</rosparam>
+
+    <rosparam param="x_vector">[-2, 0, 2, -3, -1, 1, 3, -2, 0, 2]</rosparam>
+    <rosparam param="y_vector">[2, 2, 2, 0, 0, 0, 0, -2, -2, -2]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5, 0.5, 0.8, 0.5, 0.5, 0.8, 0.5, 0.5, 0.5]</rosparam>
+    <rosparam param="vx_vector">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</rosparam>
+    <rosparam param="vy_vector">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</rosparam>
+
+    <rosparam param="x_vector">[-3.0, -2.5, -2.5, -1.0, -1.0, -0.5, 0.2, 2.0, 4.5, 4.0, 1.5]</rosparam>
+    <rosparam param="y_vector">[1.5, 0.0, -2.5, 3.0, 1.0, -4.0, -0.9, 0.0, 0.0, 2.0, 2.0]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+-->
+    <rosparam param="x_vector">[-3.0, -2.5, -2.5, -1.0, -1.0, -0.5, 2.5, 0.2, 2.0, 4.5, 4.0, 1.5]</rosparam>
+    <rosparam param="y_vector">[1.5, 0.0, -2.5, 3.0, 1.0, -4.0, -3.0, -0.9, 0.0, 0.0, 2.0, 2.0]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 1.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+  </node>
+
+</launch>
+<!-- -->

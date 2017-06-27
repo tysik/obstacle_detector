@@ -1,0 +1,36 @@
+How to use multiple Hokuyo laser scanners and determine which is which?
+----
+
+When you plug in the usb Hokuyo laser scanner into computer running Ubuntu, it shows up as a link in /dev/ folders (e.g. /dev/ttyACM0). If you have two or more laser scanners connected, you cannot be sure which link is dedicated to which device. In order to make sure that the Hokuyo laser scanners connected to the computer are being properly identified, one can make use of the getID node provided by the hokuyo_node package and the udev rules. To do so, take the following steps:
+
+1. Create a file with an udev rule in the folder /etc/udev/rules.d:
+
+sudo gedit /etc/udev/rules.d/47-hokuyo.rules
+
+(the name and number is arbitrary but there should not be two rules with the same number).
+
+2. Fill the file with the following rule (just paste the following in the file):
+
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{idVendor}=="15d1", ATTRS{idProduct}=="0000", ATTRS{manufacturer}=="Hokuyo Data Flex for USB", ATTRS{product}=="URG-Series USB Driver", MODE="666", PROGRAM="/etc/ros/run.sh hokuyo_node getID %N q", SYMLINK+="sensors/hokuyo_%c", GROUP="dialout"
+
+(mind that the user should be a member of dialout group: sudo adduser $USER dialout).
+
+3. Create a file named run.sh in the /etc/ros/ folder and provide it with executable rights:
+
+sudo touch /etc/ros/run.sh
+sudo chmod +x /etc/ros/run.sh
+
+4. Fill the file with the following:
+
+#!/bin/sh
+. /opt/ros/hydro/setup.sh 
+rosrun $@
+
+(change the distribution of ROS to the one that you use - it was Hydromedusa in my case).
+
+5. Refresh the udev rules list with:
+
+sudo udevadm control --reload-rules
+
+From now on, after plugging in the usb Hokuyo laser scanner, the /dev/ folder should not only contain ttyACMn links, but also /sensors/hokuyo_<serial_number> links, with which you can unambiguously determine which device are you using. Good luck!
+

@@ -1,0 +1,44 @@
+<library path="lib/libobstacle_detector_gui">
+
+  <class name="Scans Merger"
+         type="obstacle_detector::ScansMergerPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      Scans Merger Panel.
+    </description>
+  </class>
+
+  <class name="Obstacle Extractor"
+         type="obstacle_detector::ObstacleExtractorPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      Obstacle Extractor Panel.
+    </description>
+  </class>
+
+  <class name="Obstacle Tracker"
+         type="obstacle_detector::ObstacleTrackerPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      Obstacle Tracker Panel.
+    </description>
+  </class>
+
+  <class name="Obstacle Publisher"
+         type="obstacle_detector::ObstaclePublisherPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      Obstacle Publisher Panel.
+    </description>
+  </class>
+
+  <class name="Obstacles"
+         type="obstacles_display::ObstaclesDisplay"
+         base_class_type="rviz::Display">
+    <description>
+      Obstacles Display
+    </description>
+    <message_type>obstacle_detector/Obstacles</message_type>
+  </class>
+  
+</library>

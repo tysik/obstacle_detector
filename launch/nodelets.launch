@@ -1,0 +1,79 @@
+<!-- -->
+<launch>
+
+  <arg name="manager" doc="Name of the nodelet manager"/>
+  <arg name="machine" doc="Name of the machine on which the nodes should be started"/>
+
+  <node pkg="nodelet" type="nodelet" name="scans_merger" args="load obstacle_detector/ScansMerger $(arg manager)" machine="$(arg machine)">
+    <param name="active"            value="false"/>
+    <param name="publish_scan"      value="true"/>
+    <param name="publish_pcl"       value="false"/>
+
+    <param name="ranges_num"        value="1000"/>
+
+    <param name="min_scanner_range" value="0.05"/>
+    <param name="max_scanner_range" value="6.0"/>
+
+    <param name="min_x_range"       value="-10.0"/>
+    <param name="max_x_range"       value="10.0"/>
+    <param name="min_y_range"       value="-10.0"/>
+    <param name="max_y_range"       value="10.0"/>
+
+    <param name="frame_id"          value="scanners_base"/>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor $(arg manager)" machine="$(arg machine)">
+    <param name="active"               value="false"/>
+    <param name="use_scan"             value="true"/>
+    <param name="use_pcl"              value="false"/>
+
+    <param name="use_split_and_merge"  value="false"/>
+    <param name="discard_converted_segments" value="true"/>
+    <param name="transform_coordinates"      value="true"/>
+
+    <param name="min_group_points"     value="5"/>
+    <param name="max_group_distance"   value="0.1"/>
+    <param name="distance_proportion"  value="0.006136"/>
+    <param name="max_split_distance"   value="0.07"/>
+    <param name="max_merge_separation" value="0.15"/>
+    <param name="max_merge_spread"     value="0.07"/>
+    <param name="max_circle_radius"    value="0.6"/>
+    <param name="radius_enlargement"   value="0.29"/>
+
+    <param name="frame_id"             value="map"/>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="obstacle_tracker" args="load obstacle_detector/ObstacleTracker $(arg manager)" machine="$(arg machine)">
+    <param name="active"                  value="false"/>
+
+    <param name="loop_rate"               value="100.0"/>
+    <param name="tracking_duration"       value="2.0"/>
+    <param name="min_correspondence_cost" value="0.6"/>
+    <param name="std_correspondence_dev"  value="0.15"/>
+    <param name="process_variance"        value="0.1"/>  
+    <param name="process_rate_variance"   value="0.1"/>  
+    <param name="measurement_variance"    value="1.0"/>  
+
+    <remap from="tracked_obstacles" to="obstacles"/>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="obstacle_publisher" args="load obstacle_detector/ObstaclePublisher $(arg manager)" machine="$(arg machine)">
+    <param name="active"           value="false"/>
+    <param name="reset"            value="false"/>
+    <param name="fusion_example"   value="false"/>
+    <param name="fission_example"  value="false"/>
+
+    <param name="loop_rate"        value="100.0"/>
+    <param name="radius_margin"    value="0.29"/>
+
+    <param name="frame_id"         value="map"/>
+
+    <rosparam param="x_vector">[-1.0, 0.0, 1.0]</rosparam>
+    <rosparam param="y_vector">[0.0, -1.0, 0.0]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5, 0.5]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0, 0.0]</rosparam>
+  </node>
+
+</launch>
+<!-- -->

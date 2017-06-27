@@ -1,0 +1,43 @@
+<library path="lib/libobstacle_detector_nodelets">
+
+  <class name="obstacle_detector/ScanRectifier"
+         type="obstacle_detector::ScanRectifierNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Scan Rectifier Nodelet
+    </description>
+  </class>
+
+  <class name="obstacle_detector/ScansMerger" 
+         type="obstacle_detector::ScansMergerNodelet" 
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Scans Merger Nodelet
+    </description>
+  </class>
+
+  <class name="obstacle_detector/ObstacleExtractor" 
+         type="obstacle_detector::ObstacleExtractorNodelet" 
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Obstacle Extractor Nodelet
+    </description>
+  </class>
+
+  <class name="obstacle_detector/ObstacleTracker" 
+         type="obstacle_detector::ObstacleTrackerNodelet" 
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Obstacle Tracker Nodelet
+    </description>
+  </class>
+
+  <class name="obstacle_detector/ObstaclePublisher" 
+         type="obstacle_detector::ObstaclePublisherNodelet" 
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Obstacle Publisher Nodelet
+    </description>
+  </class>
+
+</library>
