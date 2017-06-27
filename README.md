@@ -6,7 +6,7 @@ The package requires [Armadillo C++](http://arma.sourceforge.net) library for co
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/15776148/2fc8f610-2986-11e6-88ed-6c6142e87465.png" alt="Visual example of obstacle detector output."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595825-0abe4338-5b5e-11e7-8438-ffdeec4e9cef.png" alt="Visual example of obstacle detector output."/>
   <br/>
   Fig. 1. Visual example of obstacle detector output.
 </p>
@@ -42,7 +42,7 @@ This node converts two messages of type `sensor_msgs/LaserScan` from topics `fro
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/16087445/4af50edc-3323-11e6-88c7-c7ee12b6d63b.gif" alt="Visual example of obstacle detector output"/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595821-0aa3519a-5b5e-11e7-9ce0-8f48db4592e4.gif" alt="Visual example of obstacle detector output"/>
   <br/>
   Fig. 2. Visual example of scans merging with coordinates restrictions.
 </p>
@@ -68,7 +68,7 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/20277146/a5969a7e-aa9f-11e6-992a-2f8aee8072e7.png" alt="Rviz panel for the scans_merger node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595818-0aa122b2-5b5e-11e7-9cec-8c50a3ff8fe3.png" alt="Rviz panel for the scans_merger node."/>
   <br/>
   Fig. 3. Rviz panel for the scans_merger node.
 </p>
@@ -80,7 +80,7 @@ This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/16087483/63733baa-3323-11e6-8a72-f9e17b6691d5.gif" alt="Visual example of obstacle extractor output."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595822-0aa50ab2-5b5e-11e7-8061-1da4b947b617.gif" alt="Visual example of obstacle extractor output."/>
   <br/>
   Fig. 4. Visual example of obstacle extractor output.
 </p>
@@ -113,9 +113,9 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/20277147/a5972c0a-aa9f-11e6-8bca-437474311962.png" alt="Rviz panel for the obstacle_detector node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595820-0aa28328-5b5e-11e7-900d-199543b8086e.png" alt="Rviz panel for the obstacle_extractor node."/>
   <br/>
-  Fig. 5. Rviz panel for the obstacle_detector node.
+  Fig. 5. Rviz panel for the obstacle_extractor node.
 </p>
 -----------------------
 
@@ -125,7 +125,7 @@ This node tracks and filters the circular obstacles with the use of Kalman filte
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/16087421/32d1f52c-3323-11e6-86bb-c1ac851d1b77.gif" alt="Visual example of obstacle tracker output."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595819-0aa1bc86-5b5e-11e7-80ed-90c9ea53f69f.gif" alt="Visual example of obstacle tracker output."/>
   <br/>
   Fig. 6. Visual example of obstacle tracker output.
 </p>
@@ -147,7 +147,7 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/20277145/a595e692-aa9f-11e6-9383-5dcd55dad2b4.png" alt="Rviz panel for the obstacle_tracker node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595823-0aa835a2-5b5e-11e7-9657-8cd129a50aa2.png" alt="Rviz panel for the obstacle_tracker node."/>
   <br/>
   Fig. 7. Rviz panel for the obstacle_tracker node.
 </p>
@@ -173,7 +173,7 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1482514/20277148/a59772dc-aa9f-11e6-802e-8e2b7c4782dd.png" alt="Rviz panel for the obstacle_publisher node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595824-0ab8778c-5b5e-11e7-93c3-65f8317151ff.png" alt="Rviz panel for the obstacle_publisher node."/>
   <br/>
   Fig. 9. Rviz panel for the obstacle_publisher node.
 </p>
