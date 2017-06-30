@@ -85,17 +85,16 @@ bool ScansMerger::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::R
     ROS_INFO_STREAM("[Scans Merger]: Waiting for transformations.");
     tf::TransformListener tf;
     tf::StampedTransform transform;
-    ros::Time now = ros::Time::now();
 
-    tf.waitForTransform(p_frame_id_, front_scan_frame_id_, now, ros::Duration(10.0));
-    tf.lookupTransform(p_frame_id_, front_scan_frame_id_, now, transform);
+    tf.waitForTransform(p_frame_id_, front_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
+    tf.lookupTransform(p_frame_id_, front_scan_frame_id_, ros::Time(0), transform);
 
     front_tf_.x = transform.getOrigin().getX();
     front_tf_.y = transform.getOrigin().getY();
     front_tf_.theta = tf::getYaw(transform.getRotation());
 
-    tf.waitForTransform(p_frame_id_, rear_scan_frame_id_, now, ros::Duration(10.0));
-    tf.lookupTransform(p_frame_id_, rear_scan_frame_id_, now, transform);
+    tf.waitForTransform(p_frame_id_, rear_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
+    tf.lookupTransform(p_frame_id_, rear_scan_frame_id_, ros::Time(0), transform);
 
     rear_tf_.x = transform.getOrigin().getX();
     rear_tf_.y = transform.getOrigin().getY();
