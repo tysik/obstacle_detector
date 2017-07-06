@@ -50,16 +50,6 @@ ScansMerger::ScansMerger(ros::NodeHandle& nh, ros::NodeHandle& nh_local) : nh_(n
 
   params_srv_ = nh_local_.advertiseService("params", &ScansMerger::updateParams, this);
 
-  ROS_INFO_STREAM("[Scans Merger]: Waiting for first scans.");
-  boost::shared_ptr<sensor_msgs::LaserScan const> scan;
-
-  scan = ros::topic::waitForMessage<sensor_msgs::LaserScan>("front_scan", nh_);
-  front_scan_frame_id_ = scan->header.frame_id;
-
-  scan = ros::topic::waitForMessage<sensor_msgs::LaserScan>("rear_scan", nh_);
-  rear_scan_frame_id_ = scan->header.frame_id;
-  ROS_INFO_STREAM("[Scans Merger]: Acquired first scans.");
-
   initialize();
 }
 
@@ -79,22 +69,24 @@ bool ScansMerger::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::R
   nh_local_.param<double>("max_y_range", p_max_y_range_,  10.0);
   nh_local_.param<double>("min_y_range", p_min_y_range_, -10.0);
 
-  nh_local_.param<std::string>("frame_id", p_frame_id_, "scanner_base");
+  nh_local_.param<std::string>("front_scan_frame_id", p_front_scan_frame_id_, "front_scanner");
+  nh_local_.param<std::string>("rear_scan_frame_id", p_rear_scan_frame_id_, "rear_scanner");
+  nh_local_.param<std::string>("target_frame_id", p_target_frame_id_, "scanner_base");
 
   try {
     ROS_INFO_STREAM("[Scans Merger]: Waiting for transformations.");
     tf::TransformListener tf;
     tf::StampedTransform transform;
 
-    tf.waitForTransform(p_frame_id_, front_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
-    tf.lookupTransform(p_frame_id_, front_scan_frame_id_, ros::Time(0), transform);
+    tf.waitForTransform(p_target_frame_id_, p_front_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
+    tf.lookupTransform(p_target_frame_id_, p_front_scan_frame_id_, ros::Time(0), transform);
 
     front_tf_.x = transform.getOrigin().getX();
     front_tf_.y = transform.getOrigin().getY();
     front_tf_.theta = tf::getYaw(transform.getRotation());
 
-    tf.waitForTransform(p_frame_id_, rear_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
-    tf.lookupTransform(p_frame_id_, rear_scan_frame_id_, ros::Time(0), transform);
+    tf.waitForTransform(p_target_frame_id_, p_rear_scan_frame_id_, ros::Time(0), ros::Duration(10.0));
+    tf.lookupTransform(p_target_frame_id_, p_rear_scan_frame_id_, ros::Time(0), transform);
 
     rear_tf_.x = transform.getOrigin().getX();
     rear_tf_.y = transform.getOrigin().getY();
@@ -102,7 +94,7 @@ bool ScansMerger::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::R
     ROS_INFO_STREAM("[Scans Merger]: Acquired transformations.");
   }
   catch (tf::TransformException ex) {
-    throw ex.what();
+    throw std::string("[Scans Merger]: ") + std::string(ex.what());
   }
 
   if (p_active_ != prev_active) {
@@ -192,7 +184,7 @@ void ScansMerger::rearScanCallback(const sensor_msgs::LaserScan::ConstPtr rear_s
 void ScansMerger::publishScan() {
   sensor_msgs::LaserScanPtr scan_msg(new sensor_msgs::LaserScan);
 
-  scan_msg->header.frame_id = p_frame_id_;
+  scan_msg->header.frame_id = p_target_frame_id_;
   scan_msg->header.stamp = stamp_;
   scan_msg->angle_min = -M_PI;
   scan_msg->angle_max = M_PI;
@@ -226,7 +218,7 @@ void ScansMerger::publishScan() {
 void ScansMerger::publishPCL() {
   sensor_msgs::PointCloudPtr pcl_msg(new sensor_msgs::PointCloud);
 
-  pcl_msg->header.frame_id = p_frame_id_;
+  pcl_msg->header.frame_id = p_target_frame_id_;
   pcl_msg->header.stamp = ros::Time::now();
   pcl_msg->points = points_;
 

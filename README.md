@@ -62,7 +62,9 @@ Even if only one laser scanner is used, the node can be useful for simple data p
 * `~min_x_range` (`double`, default: `-10.0`) - as above,
 * `~max_y_range` (`double`, default: `10.0`) - as above,
 * `~min_y_range` (`double`, default: `-10.0`) - as above,
-* `~frame_id` (`string`, default: `scanners_base`) - name of the coordinate frame used as the origin for the produced laser scan or point cloud.
+* `~front_scan_frame_id` (`string`, default: `front_scanner`) - name of the coordinate frame attached to the front scanner,
+* `~rear_scan_frame_id` (`string`, default: `rear_scanner`) - name of the coordinate frame attached to the rear scanner,
+* `~target_frame_id` (`string`, default: `scanners_base`) - name of the coordinate frame used as the origin for the produced laser scan or point cloud.
 
 The package comes with Rviz panel for this node.
 

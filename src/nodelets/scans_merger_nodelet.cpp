@@ -45,7 +45,7 @@ class ScansMergerNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("Initializing Scans Merger Nodelet");
+    NODELET_INFO("[Scans Merger]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
@@ -53,7 +53,7 @@ public:
       scans_merger_ = std::shared_ptr<ScansMerger>(new ScansMerger(nh, nh_local));
     }
     catch (std::string s) {
-      NODELET_ERROR_STREAM(s);
+      NODELET_FATAL_STREAM(s);
     }
   }
 

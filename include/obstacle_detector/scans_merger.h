@@ -78,9 +78,6 @@ private:
 
   ros::Time stamp_;
 
-  std::string front_scan_frame_id_;
-  std::string rear_scan_frame_id_;
-
   geometry_msgs::Pose2D front_tf_;
   geometry_msgs::Pose2D rear_tf_;
 
@@ -101,7 +98,10 @@ private:
   double p_max_y_range_;
   double p_min_y_range_;
 
-  std::string p_frame_id_;
+  std::string p_target_frame_id_;
+  std::string p_front_scan_frame_id_;
+  std::string p_rear_scan_frame_id_;
+
 };
 
 } // namespace obstacle_detector

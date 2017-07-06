@@ -27,7 +27,9 @@
     <param name="min_y_range"       value="-10.0"/>
     <param name="max_y_range"       value="10.0"/>
 
-    <param name="frame_id"          value="scanner_base"/>
+    <param name="front_scan_frame_id" value="front_scanner"/>
+    <param name="rear_scan_frame_id"  value="rear_scanner"/>
+    <param name="target_frame_id"     value="scanner_base"/>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
