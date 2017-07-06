@@ -46,7 +46,7 @@ class ScansMergerNodelet : public nodelet::Nodelet
 public:
   virtual void onInit() {
     NODELET_INFO("Initializing Scans Merger Nodelet");
-    ros::NodeHandle nh = getMTNodeHandle();
+    ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {

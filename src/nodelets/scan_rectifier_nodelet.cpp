@@ -46,7 +46,7 @@ class ScanRectifierNodelet : public nodelet::Nodelet
 public:
   virtual void onInit() {
     NODELET_INFO("Initializing Scan Rectifier Nodelet");
-    ros::NodeHandle nh = getMTNodeHandle();
+    ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {

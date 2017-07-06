@@ -46,7 +46,7 @@ class ObstacleTrackerNodelet : public nodelet::Nodelet
 public:
   virtual void onInit() {
     NODELET_INFO("Initializing Obstacle Tracker Nodelet");
-    ros::NodeHandle nh = getMTNodeHandle();
+    ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {
