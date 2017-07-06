@@ -97,7 +97,7 @@ The node is configurable with the following set of local parameters:
 * `~use_pcl` (`bool`, default: `false`) - use point cloud messages (if both scan and pcl are chosen, scans will have priority),
 * `~discard_converted_segments` (`bool`, default: `true`) - do not publish segments, from which the circles were spawned,
 * `~transform_coordinates` (`bool`, default: `true`) - transform the coordinates of obstacles to a frame described with `frame_id` parameter,
-* `~frame_id` (`string`, default: `world`) - name of coordinate frame used as origin for produced obstacles (used only if `transform_coordinates` flag is set to true).
+* `~frame_id` (`string`, default: `map`) - name of the coordinate frame used as origin for produced obstacles (used only if `transform_coordinates` flag is set to true).
 
 The following set of local parameters is dedicated to the algorithm itself:
 
@@ -144,6 +144,7 @@ The node works in a synchronous manner with the default rate of 100 Hz. If detec
 * `~process_variance` (`double`, default `0.01`) - variance of obstacles position and radius (parameter of Kalman Filter),
 * `~process_rate_variance` (`double`, default `0.1`) - variance of rate of change of obstacles values (parameter of Kalman Filter),
 * `~measurement_variance` (`double`, default `1.0`) - variance of measured obstacles values (parameter of Kalman Filter).
+* `~frame_id` (`string`, default: `map`) - name of the coordinate frame in which the obstacles are described.
 
 The package comes with Rviz panel for this node.
 

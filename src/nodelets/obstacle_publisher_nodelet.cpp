@@ -45,7 +45,7 @@ class ObstaclePublisherNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("Initializing Obstacle Publisher Nodelet");
+    NODELET_INFO("[Obstacle Publisher]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 

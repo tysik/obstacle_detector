@@ -55,6 +55,8 @@
     <param name="process_rate_variance"   value="0.1"/>  
     <param name="measurement_variance"    value="1.0"/> 
 
+    <param name="frame_id"                value="map"/>
+
     <remap from="tracked_obstacles" to="obstacles"/>
   </node>
  

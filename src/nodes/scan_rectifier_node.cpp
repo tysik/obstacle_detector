@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh_local("~");
 
   try {
+    ROS_INFO("[Scan Rectifier]: Initializing Node");
     ScanRectifier sr(nh, nh_local);
     ros::spin();
   }

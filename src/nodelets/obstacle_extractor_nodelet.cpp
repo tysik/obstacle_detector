@@ -45,7 +45,7 @@ class ObstacleExtractorNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("Initializing Obstacle Extractor Nodelet");
+    NODELET_INFO("[Obstacle Extractor]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 

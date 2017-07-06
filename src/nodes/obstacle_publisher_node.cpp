@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh_local("~");
 
   try {
+    ROS_INFO("[Obstacle Publisher]: Initializing Node");
     ObstaclePublisher op(nh, nh_local);
     ros::spin();
   }

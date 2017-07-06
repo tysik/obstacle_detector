@@ -101,7 +101,6 @@ private:
   std::string p_target_frame_id_;
   std::string p_front_scan_frame_id_;
   std::string p_rear_scan_frame_id_;
-
 };
 
 } // namespace obstacle_detector

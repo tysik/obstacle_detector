@@ -69,9 +69,9 @@ bool ScansMerger::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::R
   nh_local_.param<double>("max_y_range", p_max_y_range_,  10.0);
   nh_local_.param<double>("min_y_range", p_min_y_range_, -10.0);
 
-  nh_local_.param<std::string>("front_scan_frame_id", p_front_scan_frame_id_, "front_scanner");
-  nh_local_.param<std::string>("rear_scan_frame_id", p_rear_scan_frame_id_, "rear_scanner");
-  nh_local_.param<std::string>("target_frame_id", p_target_frame_id_, "scanner_base");
+  nh_local_.param<string>("front_scan_frame_id", p_front_scan_frame_id_, "front_scanner");
+  nh_local_.param<string>("rear_scan_frame_id", p_rear_scan_frame_id_, "rear_scanner");
+  nh_local_.param<string>("target_frame_id", p_target_frame_id_, "scanner_base");
 
   try {
     ROS_INFO_STREAM("[Scans Merger]: Waiting for transformations.");

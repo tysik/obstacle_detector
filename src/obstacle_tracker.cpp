@@ -45,12 +45,6 @@ ObstacleTracker::ObstacleTracker(ros::NodeHandle& nh, ros::NodeHandle& nh_local)
   timer_ = nh_.createTimer(ros::Duration(1.0), &ObstacleTracker::timerCallback, this, false, false);
   params_srv_ = nh_local_.advertiseService("params", &ObstacleTracker::updateParams, this);
 
-  ROS_INFO_STREAM("[Obstacle Tracker]: Waiting for first obstacles.");
-  boost::shared_ptr<obstacle_detector::Obstacles const> obstacles;
-  obstacles = ros::topic::waitForMessage<obstacle_detector::Obstacles>("raw_obstacles", nh_);
-  obstacles_.header.frame_id = obstacles->header.frame_id;
-  ROS_INFO_STREAM("[Obstacle Tracker]: Acquired first obstacles.");
-
   initialize();
 }
 
@@ -70,6 +64,9 @@ bool ObstacleTracker::updateParams(std_srvs::Empty::Request &req, std_srvs::Empt
   nh_local_.param<double>("process_variance", p_process_variance_, 0.01);
   nh_local_.param<double>("process_rate_variance", p_process_rate_variance_, 0.1);
   nh_local_.param<double>("measurement_variance", p_measurement_variance_, 1.0);
+
+  nh_local_.param<string>("frame_id", p_frame_id_, "map");
+  obstacles_.header.frame_id = p_frame_id_;
 
   TrackedObstacle::setSamplingTime(p_sampling_time_);
   TrackedObstacle::setCounterSize(static_cast<int>(p_loop_rate_ * p_tracking_duration_));
