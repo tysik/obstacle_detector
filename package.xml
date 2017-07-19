@@ -20,6 +20,7 @@
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>laser_geometry</depend>
   <depend>std_srvs</depend>
 
   <export>

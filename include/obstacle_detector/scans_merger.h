@@ -41,6 +41,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud.h>
 #include <tf/transform_listener.h>
+#include <laser_geometry/laser_geometry.h>
 
 namespace obstacle_detector
 {
@@ -57,9 +58,7 @@ private:
 
   void initialize() { std_srvs::Empty empt; updateParams(empt.request, empt.response); }
 
-  void publishScan();
-  void publishPCL();
-  void publishAll();
+  void publishMessages();
 
   ros::NodeHandle nh_;
   ros::NodeHandle nh_local_;
@@ -71,18 +70,16 @@ private:
   ros::Publisher scan_pub_;
   ros::Publisher pcl_pub_;
 
+  tf::TransformListener tf_ls_;
+  laser_geometry::LaserProjection projector_;
+
   bool front_scan_received_;
   bool rear_scan_received_;
   bool front_scan_error_;
   bool rear_scan_error_;
 
-  ros::Time stamp_;
-
-  geometry_msgs::Pose2D front_tf_;
-  geometry_msgs::Pose2D rear_tf_;
-
-  std::vector<float> ranges_;
-  std::vector<geometry_msgs::Point32> points_;
+  sensor_msgs::PointCloud front_pcl_;
+  sensor_msgs::PointCloud rear_pcl_;
 
   // Parameters
   bool p_active_;
@@ -98,6 +95,7 @@ private:
   double p_max_y_range_;
   double p_min_y_range_;
 
+  std::string p_fixed_frame_id_;
   std::string p_target_frame_id_;
   std::string p_front_scan_frame_id_;
   std::string p_rear_scan_frame_id_;

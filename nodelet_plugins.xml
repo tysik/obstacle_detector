@@ -1,13 +1,5 @@
 <library path="lib/libobstacle_detector_nodelets">
 
-  <class name="obstacle_detector/ScanRectifier"
-         type="obstacle_detector::ScanRectifierNodelet"
-         base_class_type="nodelet::Nodelet">
-    <description>
-      Scan Rectifier Nodelet
-    </description>
-  </class>
-
   <class name="obstacle_detector/ScansMerger" 
          type="obstacle_detector::ScansMergerNodelet" 
          base_class_type="nodelet::Nodelet">

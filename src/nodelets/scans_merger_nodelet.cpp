@@ -52,7 +52,7 @@ public:
     try {
       scans_merger_ = std::shared_ptr<ScansMerger>(new ScansMerger(nh, nh_local));
     }
-    catch (std::string s) {
+    catch (const char* s) {
       NODELET_FATAL_STREAM(s);
     }
   }

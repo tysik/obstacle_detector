@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     ScansMerger sm(nh, nh_local);
     ros::spin();
   }
-  catch (std::string s) {
+  catch (const char* s) {
     ROS_FATAL_STREAM(s);
   }
 
