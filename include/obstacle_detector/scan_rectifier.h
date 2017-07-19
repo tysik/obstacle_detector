@@ -70,10 +70,8 @@ private:
   tf::TransformListener tf_;
 
   boost::circular_buffer<nav_msgs::Odometry> odoms_;
-  sensor_msgs::LaserScan scan_prototype_;
-  geometry_msgs::Pose2D scanner_in_base_tf_;
+    geometry_msgs::Pose2D scanner_in_base_tf_;
 
-  int num_ranges_;
   std::vector<float> ranges_;
   std::vector<geometry_msgs::Point> points_;
 

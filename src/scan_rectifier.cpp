@@ -76,7 +76,7 @@ bool ScanRectifier::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty:
   nh_local_.param<double>("odom_rate", p_odom_rate_, 100.0);
 
   p_odom2scan_ratio_ = static_cast<int>(p_odom_rate_ / p_scan_rate_);
-  odoms_.resize(p_odom2scan_ratio_);
+  odoms_.set_capacity(p_odom2scan_ratio_);
 
   nh_local_.param<string>("robot_frame", p_robot_frame_, string("robot"));
   nh_local_.param<string>("scanner_frame", p_scanner_frame_, string("scanner"));
@@ -114,6 +114,9 @@ bool ScanRectifier::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty:
 }
 
 void ScanRectifier::scanCallback(const sensor_msgs::LaserScan::ConstPtr scan_msg) {
+  if (odoms_.size() < odoms_.capacity())
+    return;
+
   points_.clear();
 
   double t = 0.0;
@@ -173,26 +176,38 @@ void ScanRectifier::scanCallback(const sensor_msgs::LaserScan::ConstPtr scan_msg
   }
 
   // Prepare and publish scan
-  sensor_msgs::LaserScanPtr rect_scan_msg(new sensor_msgs::LaserScan(scan_prototype_));
+  sensor_msgs::LaserScanPtr rect_scan_msg(new sensor_msgs::LaserScan);
 
-  ranges_.assign(num_ranges_, 10.0f * scan_prototype_.range_max);
+  ranges_.assign(scan_msg->ranges.size(), 10.0f * scan_msg->range_max);
 
   for (auto& point : points_) {
     float angle = atan2(point.y, point.x);
     float range = sqrt(pow(point.x, 2.0) + pow(point.y, 2.0));
 \
-    int idx = static_cast<int>(num_ranges_ * (angle - scan_prototype_.angle_min) / (scan_prototype_.angle_max - scan_prototype_.angle_min));
+    int idx = static_cast<int>(scan_msg->ranges.size() * (angle - scan_msg->angle_min) / (scan_msg->angle_max - scan_msg->angle_min));
 
     if (ranges_[idx] > range)
       ranges_[idx] = range;
   }
 
-  for (int jdx = 0; jdx < num_ranges_; ++jdx)
-    if (ranges_[jdx] < scan_prototype_.range_min || ranges_[jdx] > scan_prototype_.range_max)
+  for (int jdx = 0; jdx < scan_msg->ranges.size(); ++jdx)
+    if (ranges_[jdx] < scan_msg->range_min || ranges_[jdx] > scan_msg->range_max)
       ranges_[jdx] = nan("");
 
+  rect_scan_msg->header.frame_id = p_scanner_frame_;
   rect_scan_msg->header.stamp = scan_msg->header.stamp;
-  rect_scan_msg->ranges = ranges_;
+
+  rect_scan_msg->angle_min = scan_msg->angle_min;
+  rect_scan_msg->angle_max = scan_msg->angle_max;
+  rect_scan_msg->angle_increment = scan_msg->angle_increment;
+
+  rect_scan_msg->range_min = scan_msg->range_min;
+  rect_scan_msg->range_max = scan_msg->range_max;
+
+  rect_scan_msg->scan_time = scan_msg->scan_time;
+  rect_scan_msg->time_increment = scan_msg->time_increment;
+
+  rect_scan_msg-> ranges = ranges_;
 
   scan_pub_.publish(rect_scan_msg);
 }
