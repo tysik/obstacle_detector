@@ -85,8 +85,8 @@ bool ScanRectifier::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty:
     ROS_INFO_STREAM("[Scan Rectifier]: Waiting for transformation: " << p_robot_frame_ << " -> " << p_scanner_frame_);
     tf::StampedTransform transform;
     ros::Time now = ros::Time::now();
-    tf_.waitForTransform(p_robot_frame_, p_scanner_frame_, now, ros::Duration(10.0));
-    tf_.lookupTransform(p_robot_frame_, p_scanner_frame_, now, transform);
+    tf_ls_.waitForTransform(p_robot_frame_, p_scanner_frame_, now, ros::Duration(10.0));
+    tf_ls_.lookupTransform(p_robot_frame_, p_scanner_frame_, now, transform);
 
     scanner_in_base_tf_.x = transform.getOrigin().getX();
     scanner_in_base_tf_.y = transform.getOrigin().getY();
@@ -114,73 +114,85 @@ bool ScanRectifier::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty:
 }
 
 void ScanRectifier::scanCallback(const sensor_msgs::LaserScan::ConstPtr scan_msg) {
-  if (odoms_.size() < odoms_.capacity())
+//  if (odoms_.size() < odoms_.capacity())
+//    return;
+
+//  points_.clear();
+
+//  double t = 0.0;
+//  double theta = 0.0;
+//  double phi = scan_msg->angle_min;
+
+//  double dt = scan_msg->time_increment;
+//  double dphi = scan_msg->angle_increment;
+//  double dt_offset = scan_msg->header.stamp.toSec() - odoms_[0].header.stamp.toSec();
+
+//  int idx_offset = 0;
+//  if (dt_offset > 0.0)
+//    idx_offset = static_cast<int>(dt_offset * p_odom_rate_);
+
+//  // Temporary velocities in robot coordinate frame
+//  double u, v, w;
+//  u = v = w = 0.0;
+
+//  // Corrections of point coordinates resulting from motion prediction
+//  double x_cor, y_cor;
+//  x_cor = y_cor = 0.0;
+
+//  geometry_msgs::Point point;
+//  for (const float r : scan_msg->ranges) {
+//    if (r > scan_msg->range_min && r < scan_msg->range_max) {
+//      int cur_odom_idx = static_cast<int>(p_odom2scan_ratio_ * t / scan_msg->scan_time) + idx_offset;
+//      if (cur_odom_idx >= odoms_.size())
+//        cur_odom_idx = odoms_.size() - 1;
+
+//      u = odoms_[cur_odom_idx].twist.twist.linear.x;
+//      v = odoms_[cur_odom_idx].twist.twist.linear.y;
+//      w = odoms_[cur_odom_idx].twist.twist.angular.z;
+
+//      w = 0.0;
+//      v = 0.0;
+
+//      double v_s_x = u - scanner_in_base_tf_.y * w;
+//      double v_s_y = v + scanner_in_base_tf_.x * w;
+
+//      // TODO: Rotate velocities into scanner frame
+
+//      if (w != 0.0) {
+//        x_cor = (v_s_x * sin(theta) + v_s_y * (cos(theta) - 1.0)) / w;
+//        y_cor = (v_s_x * (1.0 - cos(theta)) + v_s_y * sin(theta)) / w;
+//      }
+//      else {
+//        x_cor = v_s_x * t;
+//        y_cor = v_s_y * t;
+//      }
+
+//      point.x = r * cos(phi + theta) + x_cor;
+//      point.y = r * sin(phi + theta) + y_cor;
+
+//      points_.push_back(point);
+//    }
+
+//    t += dt;
+//    phi += dphi;
+//    theta += w * dt;
+//  }
+
+  if (!tf_ls_.waitForTransform(scan_msg->header.frame_id, p_robot_frame_,
+                               scan_msg->header.stamp + ros::Duration().fromSec(scan_msg->ranges.size() * scan_msg->time_increment), ros::Duration(1.0)))
     return;
 
-  points_.clear();
+  sensor_msgs::PointCloud cloud;
+  projector_.transformLaserScanToPointCloud(p_robot_frame_, *scan_msg, cloud, tf_ls_);
 
-  double t = 0.0;
-  double theta = 0.0;
-  double phi = scan_msg->angle_min;
-
-  double dt = scan_msg->time_increment;
-  double dphi = scan_msg->angle_increment;
-  double dt_offset = scan_msg->header.stamp.toSec() - odoms_[0].header.stamp.toSec();
-
-  int idx_offset = 0;
-  if (dt_offset > 0.0)
-    idx_offset = static_cast<int>(dt_offset * p_odom_rate_);
-
-  // Temporary velocities in robot coordinate frame
-  double u, v, w;
-  u = v = w = 0.0;
-
-  // Corrections of point coordinates resulting from motion prediction
-  double x_cor, y_cor;
-  x_cor = y_cor = 0.0;
-
-  geometry_msgs::Point point;
-  for (const float r : scan_msg->ranges) {
-    if (r > scan_msg->range_min && r < scan_msg->range_max) {
-      int cur_odom_idx = static_cast<int>(p_odom2scan_ratio_ * t / scan_msg->scan_time) + idx_offset;
-      if (cur_odom_idx >= odoms_.size())
-        cur_odom_idx = odoms_.size() - 1;
-
-      u = odoms_[cur_odom_idx].twist.twist.linear.x;
-      v = odoms_[cur_odom_idx].twist.twist.linear.y;
-      w = odoms_[cur_odom_idx].twist.twist.angular.z;
-
-      double v_s_x = u - scanner_in_base_tf_.y * w;
-      double v_s_y = v + scanner_in_base_tf_.x * w;
-
-      // TODO: Rotate velocities into scanner frame
-
-      if (w != 0.0) {
-        x_cor = (v_s_x * sin(theta) + v_s_y * (cos(theta) - 1.0)) / w;
-        y_cor = (v_s_x * (1.0 - cos(theta)) + v_s_y * sin(theta)) / w;
-      }
-      else {
-        x_cor = v_s_x * t;
-        y_cor = v_s_y * t;
-      }
-
-      point.x = r * cos(phi + theta) + x_cor;
-      point.y = r * sin(phi + theta) + y_cor;
-
-      points_.push_back(point);
-    }
-
-    t += dt;
-    phi += dphi;
-    theta += w * dt;
-  }
+  // Do something with cloud.
 
   // Prepare and publish scan
   sensor_msgs::LaserScanPtr rect_scan_msg(new sensor_msgs::LaserScan);
 
   ranges_.assign(scan_msg->ranges.size(), 10.0f * scan_msg->range_max);
 
-  for (auto& point : points_) {
+  for (auto& point : cloud.points) {
     float angle = atan2(point.y, point.x);
     float range = sqrt(pow(point.x, 2.0) + pow(point.y, 2.0));
 \

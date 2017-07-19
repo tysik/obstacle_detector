@@ -43,6 +43,8 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Pose2D.h>
 #include <tf/transform_listener.h>
+#include <laser_geometry/laser_geometry.h>
+#include <sensor_msgs/PointCloud.h>
 
 namespace obstacle_detector
 {
@@ -67,10 +69,11 @@ private:
   ros::Publisher scan_pub_;
   ros::ServiceServer params_srv_;
 
-  tf::TransformListener tf_;
+  tf::TransformListener tf_ls_;
+  laser_geometry::LaserProjection projector_;
 
   boost::circular_buffer<nav_msgs::Odometry> odoms_;
-    geometry_msgs::Pose2D scanner_in_base_tf_;
+  geometry_msgs::Pose2D scanner_in_base_tf_;
 
   std::vector<float> ranges_;
   std::vector<geometry_msgs::Point> points_;
