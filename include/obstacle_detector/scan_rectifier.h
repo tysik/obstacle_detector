@@ -75,13 +75,18 @@ private:
 
   int num_ranges_;
   std::vector<float> ranges_;
-  std::vector<geometry_msgs::Point32> points_;
+  std::vector<geometry_msgs::Point> points_;
 
   // Parameters
   bool p_active_;
+
   double p_scan_rate_;
   double p_odom_rate_;
+
   int p_odom2scan_ratio_;
+
+  std::string p_robot_frame_;
+  std::string p_scanner_frame_;
 };
 
 } // namespace obstacle_detector

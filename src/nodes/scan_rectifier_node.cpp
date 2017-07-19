@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     ScanRectifier sr(nh, nh_local);
     ros::spin();
   }
-  catch(std::string s) {
+  catch(const char* s) {
     ROS_ERROR_STREAM(s);
   }
 

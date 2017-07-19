@@ -50,35 +50,19 @@ ScanRectifier::ScanRectifier(ros::NodeHandle& nh, ros::NodeHandle& nh_local) : n
 //  }
 //  ROS_INFO_STREAM("[Scan Rectifier]: Acquired first " << p_odom2scan_ratio_ << " odometry messages.");
 
-  ROS_INFO_STREAM("[Scan Rectifier]: Waiting for first odometry message.");
-  boost::shared_ptr<nav_msgs::Odometry const> first_odom;
-  first_odom = ros::topic::waitForMessage<nav_msgs::Odometry>("odom", nh_);
-  odoms_.push_back(*first_odom);
-  ROS_INFO_STREAM("[Scan Rectifier]: Acquired first odometry message.");
+//  ROS_INFO_STREAM("[Scan Rectifier]: Waiting for first odometry message.");
+//  boost::shared_ptr<nav_msgs::Odometry const> first_odom;
+//  first_odom = ros::topic::waitForMessage<nav_msgs::Odometry>("odom", nh_);
+//  odoms_.push_back(*first_odom);
+//  ROS_INFO_STREAM("[Scan Rectifier]: Acquired first odometry message.");
 
-  ROS_INFO_STREAM("[Scan Rectifier]: Waiting for first scan message.");
-  boost::shared_ptr<sensor_msgs::LaserScan const> first_scan;
-  first_scan = ros::topic::waitForMessage<sensor_msgs::LaserScan>("scan", nh_);
-  scan_prototype_ = *first_scan;
-  num_ranges_ = scan_prototype_.ranges.size();
-  scan_prototype_.ranges.clear();
-  ROS_INFO_STREAM("[Scan Rectifier]: Acquired first laser scan.");
-
-  try {
-    ROS_INFO_STREAM("[Scan Rectifier]: Waiting for transformations.");
-    tf::StampedTransform transform;
-    ros::Time now = ros::Time::now();
-    tf_.waitForTransform(first_odom->child_frame_id, first_scan->header.frame_id, now, ros::Duration(10.0));
-    tf_.lookupTransform(first_odom->child_frame_id, first_scan->header.frame_id, now, transform);
-
-    scanner_in_base_tf_.x = transform.getOrigin().getX();
-    scanner_in_base_tf_.y = transform.getOrigin().getY();
-    scanner_in_base_tf_.theta = tf::getYaw(transform.getRotation());
-    ROS_INFO_STREAM("[Scan Rectifier]: Acquired transformations.");
-  }
-  catch (tf::TransformException ex) {
-    throw ex.what();
-  }
+//  ROS_INFO_STREAM("[Scan Rectifier]: Waiting for first scan message.");
+//  boost::shared_ptr<sensor_msgs::LaserScan const> first_scan;
+//  first_scan = ros::topic::waitForMessage<sensor_msgs::LaserScan>("scan", nh_);
+//  scan_prototype_ = *first_scan;
+//  num_ranges_ = scan_prototype_.ranges.size();
+//  scan_prototype_.ranges.clear();
+//  ROS_INFO_STREAM("[Scan Rectifier]: Acquired first laser scan.");
 
   initialize();
 }
@@ -92,8 +76,26 @@ bool ScanRectifier::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty:
   nh_local_.param<double>("odom_rate", p_odom_rate_, 100.0);
 
   p_odom2scan_ratio_ = static_cast<int>(p_odom_rate_ / p_scan_rate_);
-
   odoms_.resize(p_odom2scan_ratio_);
+
+  nh_local_.param<string>("robot_frame", p_robot_frame_, string("robot"));
+  nh_local_.param<string>("scanner_frame", p_scanner_frame_, string("scanner"));
+
+  try {
+    ROS_INFO_STREAM("[Scan Rectifier]: Waiting for transformation: " << p_robot_frame_ << " -> " << p_scanner_frame_);
+    tf::StampedTransform transform;
+    ros::Time now = ros::Time::now();
+    tf_.waitForTransform(p_robot_frame_, p_scanner_frame_, now, ros::Duration(10.0));
+    tf_.lookupTransform(p_robot_frame_, p_scanner_frame_, now, transform);
+
+    scanner_in_base_tf_.x = transform.getOrigin().getX();
+    scanner_in_base_tf_.y = transform.getOrigin().getY();
+    scanner_in_base_tf_.theta = tf::getYaw(transform.getRotation());
+    ROS_INFO_STREAM("[Scan Rectifier]: Acquired transformation " << p_robot_frame_ << " -> " << p_scanner_frame_);
+  }
+  catch (tf::TransformException ex) {
+    throw ex.what();
+  }
 
   if (p_active_ != prev_active) {
     if (p_active_) {
@@ -134,7 +136,7 @@ void ScanRectifier::scanCallback(const sensor_msgs::LaserScan::ConstPtr scan_msg
   double x_cor, y_cor;
   x_cor = y_cor = 0.0;
 
-  geometry_msgs::Point32 point;
+  geometry_msgs::Point point;
   for (const float r : scan_msg->ranges) {
     if (r > scan_msg->range_min && r < scan_msg->range_max) {
       int cur_odom_idx = static_cast<int>(p_odom2scan_ratio_ * t / scan_msg->scan_time) + idx_offset;
