@@ -141,30 +141,78 @@ void ObstacleExtractor::processPoints() {
 }
 
 void ObstacleExtractor::groupPoints() {
+  static double sin_dp = sin(2.0 * p_distance_proportion_);
+
   PointSet point_set;
+  point_set.begin = input_points_.begin();
+  point_set.end = input_points_.begin();
+  point_set.num_points = 1;
+  point_set.is_visible = false; // Previous point is unknown
 
-  for (PointIterator point = input_points_.begin(); point != input_points_.end(); ++point) {
-    if (point_set.num_points != 0) {
-      double r = (*point).length();
+  for (PointIterator point = input_points_.begin()++; point != input_points_.end(); ++point) {
+    double range = (*point).length();
+    double distance = (*point - *point_set.end).length();
 
-      if ((*point - *point_set.end).lengthSquared() > pow(p_max_group_distance_ + r * p_distance_proportion_, 2.0)) {
-        detectSegments(point_set);
-        point_set.num_points = -1;
-        advance(point, -1);
-      }
-      else
-        point_set.end = point;
+    if (distance < p_max_group_distance_ + range * p_distance_proportion_) {
+      point_set.end = point;
+      point_set.num_points++;
     }
     else {
+      double prev_range = (*point_set.end).length();
+
+      // Heron's equation
+      double p = (range + prev_range + distance) / 2.0;
+      double S = sqrt(p * (p - range) * (p - prev_range) * (p - distance));
+      double sin_d = 2.0 * S / (range * prev_range); // Sine of angle between beams
+
+      // TODO: This condition can be fulfilled if the point are on the opposite sides
+      // of the scanner (angle = 180 deg). Needs another check.
+      if (abs(sin_d) < sin_dp && range < prev_range)
+        point_set.is_visible = false;
+
+      detectSegments(point_set);
+
+      // Begin new point set
       point_set.begin = point;
       point_set.end = point;
+      point_set.num_points = 1;
+      point_set.is_visible = (abs(sin_d) > sin_dp || range < prev_range);
     }
-
-    point_set.num_points++;
   }
 
+  point_set.is_visible = false; // Next point is unknown
   detectSegments(point_set); // Check the last point set too!
 }
+
+//void ObstacleExtractor::groupPoints() {
+//  PointSet point_set;
+
+//  Point first_point = *input_points_.begin();
+//  Point recent_point;
+//  for (PointIterator point = input_points_.begin(); point != input_points_.end(); ++point) {
+//    if (point_set.num_points != 0) {
+//      double r = (*point).length();
+
+//      if ((*point - *point_set.end).lengthSquared() > pow(p_max_group_distance_ + r * p_distance_proportion_, 2.0)) {
+//        detectSegments(point_set);
+//        point_set.num_points = -1;
+//        advance(point, -1);
+//      }
+//      else {
+//        point_set.end = point;
+//      }
+//    }
+//    else {
+//      point_set.begin = point;
+//      point_set.end = point;
+//    }
+
+//    point_set.num_points++;
+//    recent_point = *point;
+//  }
+
+//  detectSegments(point_set); // Check the last point set too!
+//}
 
 void ObstacleExtractor::detectSegments(const PointSet& point_set) {
   if (point_set.num_points < p_min_group_points_)
@@ -205,10 +253,12 @@ void ObstacleExtractor::detectSegments(const PointSet& point_set) {
     subset1.begin = point_set.begin;
     subset1.end = set_divider;
     subset1.num_points = split_index;
+    subset1.is_visible = point_set.is_visible;
 
     subset2.begin = ++set_divider;
     subset2.end = point_set.end;
     subset2.num_points = point_set.num_points - split_index;
+    subset2.is_visible = point_set.is_visible;
 
     detectSegments(subset1);
     detectSegments(subset2);
@@ -276,6 +326,16 @@ bool ObstacleExtractor::checkSegmentsCollinearity(const Segment& segment, const 
 
 void ObstacleExtractor::detectCircles() {
   for (auto segment = segments_.begin(); segment != segments_.end(); ++segment) {
+//    bool segment_is_visible = true;
+//    for (const PointSet& ps : segment->point_sets) {
+//      if (!ps.is_visible) {
+//        segment_is_visible = false;
+//        break;
+//      }
+//    }
+//    if (!segment_is_visible)
+//      continue;
+
     Circle circle(*segment);
     circle.radius += p_radius_enlargement_;
 

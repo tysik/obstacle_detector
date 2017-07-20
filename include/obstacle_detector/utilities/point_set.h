@@ -47,10 +47,11 @@ typedef std::list<Point>::iterator PointIterator;
 class PointSet
 {
 public:
-  PointSet() { num_points = 0; }
+  PointSet() : num_points(0), is_visible(false) {}
 
   PointIterator begin, end;    // The iterators point to the list of points existing somewhere else
   int num_points;
+  bool is_visible;  // The point set is not occluded by any other point set
 };
 
 } // namespace obstacle_detector
