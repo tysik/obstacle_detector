@@ -45,15 +45,18 @@ class ScansMergerNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("[Scans Merger]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {
+      NODELET_INFO("[Scans Merger]: Initializing nodelet");
       scans_merger_ = std::shared_ptr<ScansMerger>(new ScansMerger(nh, nh_local));
     }
     catch (const char* s) {
-      NODELET_FATAL_STREAM(s);
+      NODELET_FATAL_STREAM("[Scans Merger]: " << s);
+    }
+    catch (...) {
+      NODELET_FATAL_STREAM("[Scans Merger]: Unexpected error");
     }
   }
 

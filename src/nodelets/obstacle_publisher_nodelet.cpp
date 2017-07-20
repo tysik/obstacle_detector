@@ -45,15 +45,18 @@ class ObstaclePublisherNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("[Obstacle Publisher]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {
-      obstacle_publisher_ = std::shared_ptr<ObstaclePublisher>(new ObstaclePublisher(nh, nh_local));
+    NODELET_INFO("[Obstacle Publisher]: Initializing nodelet");
+    obstacle_publisher_ = std::shared_ptr<ObstaclePublisher>(new ObstaclePublisher(nh, nh_local));
     }
-    catch (std::string s) {
-      NODELET_ERROR_STREAM(s);
+    catch (const char* s) {
+      NODELET_FATAL_STREAM("[Obstacle Publisher]: " << s);
+    }
+    catch (...) {
+      NODELET_FATAL_STREAM("[Obstacle Publisher]: Unexpected error");
     }
   }
 

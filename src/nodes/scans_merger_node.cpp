@@ -48,7 +48,10 @@ int main(int argc, char** argv) {
     ros::spin();
   }
   catch (const char* s) {
-    ROS_FATAL_STREAM(s);
+    ROS_FATAL_STREAM("[Scans Merger]: " << s);
+  }
+  catch (...) {
+    ROS_FATAL_STREAM("[Scans Merger]: Unexpected error");
   }
 
   return 0;

@@ -45,15 +45,18 @@ class ObstacleTrackerNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("[Obstacle Tracker]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {
+      NODELET_INFO("[Obstacle Tracker]: Initializing nodelet");
       obstacle_tracker_ = std::shared_ptr<ObstacleTracker>(new ObstacleTracker(nh, nh_local));
     }
-    catch (std::string s) {
-      NODELET_ERROR_STREAM(s);
+    catch (const char* s) {
+      NODELET_FATAL_STREAM("[Obstacle Tracker]: " << s);
+    }
+    catch (...) {
+      NODELET_FATAL_STREAM("[Obstacle Tracker]: Unexpected error");
     }
   }
 

@@ -47,8 +47,11 @@ int main(int argc, char** argv) {
     ObstacleExtractor od(nh, nh_local);
     ros::spin();
   }
-  catch (std::string s) {
-    ROS_ERROR_STREAM(s);
+  catch (const char* s) {
+    ROS_FATAL_STREAM("[Obstacle Extractor]: "  << s);
+  }
+  catch (...) {
+    ROS_FATAL_STREAM("[Obstacle Extractor]: Unexpected error");
   }
 
   return 0;

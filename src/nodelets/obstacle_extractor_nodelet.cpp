@@ -45,15 +45,18 @@ class ObstacleExtractorNodelet : public nodelet::Nodelet
 {
 public:
   virtual void onInit() {
-    NODELET_INFO("[Obstacle Extractor]: Initializing Nodelet");
     ros::NodeHandle nh = getNodeHandle();
     ros::NodeHandle nh_local = getPrivateNodeHandle();
 
     try {
+      NODELET_INFO("[Obstacle Extractor]: Initializing nodelet");
       obstacle_extractor_ = std::shared_ptr<ObstacleExtractor>(new ObstacleExtractor(nh, nh_local));
     }
-    catch (std::string s) {
-      NODELET_ERROR_STREAM(s);
+    catch (const char* s) {
+      NODELET_FATAL_STREAM("[Obstacle Extractor]: " << s);
+    }
+    catch (...) {
+      NODELET_FATAL_STREAM("[Obstacle Extractor]: Unexpected error");
     }
   }
 
