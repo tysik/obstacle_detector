@@ -47,13 +47,40 @@ ObstacleExtractor::ObstacleExtractor(ros::NodeHandle& nh, ros::NodeHandle& nh_lo
   initialize();
 }
 
+ObstacleExtractor::~ObstacleExtractor() {
+  nh_local_.deleteParam("active");
+  nh_local_.deleteParam("use_scan");
+  nh_local_.deleteParam("use_pcl");
+
+  nh_local_.deleteParam("use_split_and_merge");
+  nh_local_.deleteParam("discard_converted_segments");
+  nh_local_.deleteParam("transform_coordinates");
+
+  nh_local_.deleteParam("min_group_points");
+
+  nh_local_.deleteParam("max_group_distance");
+  nh_local_.deleteParam("distance_proportion");
+  nh_local_.deleteParam("max_split_distance");
+  nh_local_.deleteParam("max_merge_separation");
+  nh_local_.deleteParam("max_merge_spread");
+  nh_local_.deleteParam("max_circle_radius");
+  nh_local_.deleteParam("radius_enlargement");
+
+  nh_local_.deleteParam("min_x_limit");
+  nh_local_.deleteParam("max_x_limit");
+  nh_local_.deleteParam("min_y_limit");
+  nh_local_.deleteParam("max_y_limit");
+
+  nh_local_.deleteParam("frame_id");
+}
+
 bool ObstacleExtractor::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res) {
   bool prev_active = p_active_;
 
   nh_local_.param<bool>("active", p_active_, true);
-  nh_local_.param<bool>("use_scan", p_use_scan_, true);
-  nh_local_.param<bool>("use_pcl", p_use_pcl_, false);
-  nh_local_.param<bool>("use_split_and_merge", p_use_split_and_merge_, false);
+  nh_local_.param<bool>("use_scan", p_use_scan_, false);
+  nh_local_.param<bool>("use_pcl", p_use_pcl_, true);
+  nh_local_.param<bool>("use_split_and_merge", p_use_split_and_merge_, true);
   nh_local_.param<bool>("discard_converted_segments", p_discard_converted_segments_, true);
   nh_local_.param<bool>("transform_coordinates", p_transform_coordinates_, true);
 
@@ -147,7 +174,7 @@ void ObstacleExtractor::groupPoints() {
   point_set.begin = input_points_.begin();
   point_set.end = input_points_.begin();
   point_set.num_points = 1;
-  point_set.is_visible = false; // Previous point is unknown
+  point_set.is_visible = true;
 
   for (PointIterator point = input_points_.begin()++; point != input_points_.end(); ++point) {
     double range = (*point).length();
@@ -180,39 +207,8 @@ void ObstacleExtractor::groupPoints() {
     }
   }
 
-  point_set.is_visible = false; // Next point is unknown
   detectSegments(point_set); // Check the last point set too!
 }
-
-//void ObstacleExtractor::groupPoints() {
-//  PointSet point_set;
-
-//  Point first_point = *input_points_.begin();
-//  Point recent_point;
-//  for (PointIterator point = input_points_.begin(); point != input_points_.end(); ++point) {
-//    if (point_set.num_points != 0) {
-//      double r = (*point).length();
-
-//      if ((*point - *point_set.end).lengthSquared() > pow(p_max_group_distance_ + r * p_distance_proportion_, 2.0)) {
-//        detectSegments(point_set);
-//        point_set.num_points = -1;
-//        advance(point, -1);
-//      }
-//      else {
-//        point_set.end = point;
-//      }
-//    }
-//    else {
-//      point_set.begin = point;
-//      point_set.end = point;
-//    }
-
-//    point_set.num_points++;
-//    recent_point = *point;
-//  }
-
-//  detectSegments(point_set); // Check the last point set too!
-//}
 
 void ObstacleExtractor::detectSegments(const PointSet& point_set) {
   if (point_set.num_points < p_min_group_points_)
@@ -279,7 +275,7 @@ void ObstacleExtractor::mergeSegments() {
         auto temp_itr = segments_.insert(i, merged_segment);
         segments_.erase(i);
         segments_.erase(j);
-        i = --temp_itr;
+        i = --temp_itr; // Check the new segment against others
         break;
       }
     }
@@ -326,15 +322,15 @@ bool ObstacleExtractor::checkSegmentsCollinearity(const Segment& segment, const 
 
 void ObstacleExtractor::detectCircles() {
   for (auto segment = segments_.begin(); segment != segments_.end(); ++segment) {
-//    bool segment_is_visible = true;
-//    for (const PointSet& ps : segment->point_sets) {
-//      if (!ps.is_visible) {
-//        segment_is_visible = false;
-//        break;
-//      }
-//    }
-//    if (!segment_is_visible)
-//      continue;
+    bool segment_is_visible = true;
+    for (const PointSet& ps : segment->point_sets) {
+      if (!ps.is_visible) {
+        segment_is_visible = false;
+        break;
+      }
+    }
+    if (!segment_is_visible)
+      continue;
 
     Circle circle(*segment);
     circle.radius += p_radius_enlargement_;
@@ -446,7 +442,8 @@ void ObstacleExtractor::publishObstacles() {
   }
 
   for (const Circle& c : circles_) {
-    if (c.center.x > p_min_x_limit_ && c.center.x < p_max_x_limit_ && c.center.y > p_min_y_limit_ && c.center.y < p_max_y_limit_) {
+    if (c.center.x > p_min_x_limit_ && c.center.x < p_max_x_limit_ &&
+        c.center.y > p_min_y_limit_ && c.center.y < p_max_y_limit_) {
         CircleObstacle circle;
 
         circle.center.x = c.center.x;

@@ -54,6 +54,7 @@ class ObstacleExtractor
 {
 public:
   ObstacleExtractor(ros::NodeHandle& nh, ros::NodeHandle& nh_local);
+  ~ObstacleExtractor();
 
 private:
   bool updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res);
@@ -96,6 +97,7 @@ private:
   bool p_active_;
   bool p_use_scan_;
   bool p_use_pcl_;
+
   bool p_use_split_and_merge_;
   bool p_discard_converted_segments_;
   bool p_transform_coordinates_;

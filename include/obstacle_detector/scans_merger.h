@@ -50,6 +50,7 @@ class ScansMerger
 {
 public:
   ScansMerger(ros::NodeHandle& nh, ros::NodeHandle& nh_local);
+  ~ScansMerger();
 
 private:
   bool updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res);

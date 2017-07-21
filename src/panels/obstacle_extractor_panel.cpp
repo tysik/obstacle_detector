@@ -231,24 +231,25 @@ void ObstacleExtractorPanel::setParams() {
 }
 
 void ObstacleExtractorPanel::getParams() {
-  nh_local_.param<int>("min_group_points", p_min_group_points_, 5);
+  p_active_ = nh_local_.param("active", false);
+  p_use_scan_ = nh_local_.param("use_scan", false);
+  p_use_pcl_ = nh_local_.param("use_pcl", false);
 
-  nh_local_.param<bool>("active", p_active_, true);
-  nh_local_.param<bool>("use_scan", p_use_scan_, true);
-  nh_local_.param<bool>("use_pcl", p_use_pcl_, false);
-  nh_local_.param<bool>("use_split_and_merge", p_use_split_and_merge_, false);
-  nh_local_.param<bool>("discard_converted_segments", p_discard_converted_segments_, true);
-  nh_local_.param<bool>("transform_coordinates", p_transform_coordinates_, true);
+  p_use_split_and_merge_ = nh_local_.param("use_split_and_merge", false);
+  p_discard_converted_segments_ = nh_local_.param("discard_converted_segments", false);
+  p_transform_coordinates_ = nh_local_.param("transform_coordinates", false);
 
-  nh_local_.param<double>("max_group_distance", p_max_group_distance_, 0.100);
-  nh_local_.param<double>("distance_proportion", p_distance_proportion_, 0.006136);
-  nh_local_.param<double>("max_split_distance", p_max_split_distance_, 0.070);
-  nh_local_.param<double>("max_merge_separation", p_max_merge_separation_, 0.150);
-  nh_local_.param<double>("max_merge_spread", p_max_merge_spread_, 0.070);
-  nh_local_.param<double>("max_circle_radius", p_max_circle_radius_, 0.300);
-  nh_local_.param<double>("radius_enlargement", p_radius_enlargement_, 0.030);
+  p_min_group_points_ = nh_local_.param("min_group_points", 0);
 
-  nh_local_.param<string>("frame_id", p_frame_id_, "world");
+  p_max_group_distance_ = nh_local_.param("max_group_distance", 0.0);
+  p_distance_proportion_ = nh_local_.param("distance_proportion", 0.0);
+  p_max_split_distance_ = nh_local_.param("max_split_distance", 0.0);
+  p_max_merge_separation_ = nh_local_.param("max_merge_separation", 0.0);
+  p_max_merge_spread_ = nh_local_.param("max_merge_spread", 0.0);
+  p_max_circle_radius_ = nh_local_.param("max_circle_radius", 0.0);
+  p_radius_enlargement_ = nh_local_.param("radius_enlargement", 0.0);
+
+  p_frame_id_ = nh_local_.param("frame_id", std::string(""));
 }
 
 void ObstacleExtractorPanel::evaluateParams() {

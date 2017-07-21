@@ -222,38 +222,21 @@ void ScansMergerPanel::setParams() {
 }
 
 void ScansMergerPanel::getParams() {
-  if (!nh_local_.getParam("active", p_active_))
-    p_active_ = false;
+  p_active_ = nh_local_.param("active", false);
+  p_publish_scan_ = nh_local_.param("publish_scan", false);
+  p_publish_pcl_ = nh_local_.param("publish_pcl", false);
 
-  if (!nh_local_.getParam("publish_scan", p_publish_scan_))
-    p_publish_scan_ = false;
+  p_ranges_num_ = nh_local_.param("publish_pcl", 0);
 
-  if (!nh_local_.getParam("publish_pcl", p_publish_pcl_))
-    p_publish_pcl_ = false;
+  p_min_scanner_range_ = nh_local_.param("min_scanner_range", 0.0);
+  p_max_scanner_range_ = nh_local_.param("max_scanner_range", 0.0);
 
-  if (!nh_local_.getParam("ranges_num", p_ranges_num_))
-    p_ranges_num_ = 0;
+  p_min_x_range_ = nh_local_.param("min_x_range", 0.0);
+  p_max_x_range_ = nh_local_.param("max_x_range", 0.0);
+  p_min_y_range_ = nh_local_.param("min_y_range", 0.0);
+  p_max_y_range_ = nh_local_.param("max_y_range", 0.0);
 
-  if (!nh_local_.getParam("min_scanner_range", p_min_scanner_range_))
-    p_min_scanner_range_ = 0.0;
-
-  if (!nh_local_.getParam("max_scanner_range", p_max_scanner_range_))
-    p_max_scanner_range_ = 0.0;
-
-  if (!nh_local_.getParam("max_x_range", p_max_x_range_))
-    p_max_x_range_ = 0.0;
-
-  if (!nh_local_.getParam("min_x_range", p_min_x_range_))
-    p_min_x_range_ = 0.0;
-
-  if (!nh_local_.getParam("max_y_range", p_max_y_range_))
-    p_max_y_range_ = 0.0;
-
-  if (!nh_local_.getParam("min_y_range", p_min_y_range_))
-    p_min_y_range_ = 0.0;
-
-  if (!nh_local_.getParam("target_frame_id", p_target_frame_id_))
-    p_target_frame_id_ = std::string("-");
+  p_target_frame_id_ = nh_local_.param("target_frame_id", std::string(""));
 }
 
 void ScansMergerPanel::evaluateParams() {

@@ -16,8 +16,7 @@ The package requires [Armadillo C++](http://arma.sourceforge.net) library for co
   1.1 The scans_merger 
   1.2 The obstacle_extractor 
   1.3 The obstacle_tracker 
-  1.4 The obstacle_publisher 
-  1.5 The obstacle_recorder 
+  1.4 The obstacle_publisher
 2. The messages
 3. Launch files
 4. The displays
@@ -40,6 +39,8 @@ For the ease of use it is recomended to use appropriate Rviz panels provided for
 
 This node converts two messages of type `sensor_msgs/LaserScan` from topics `front_scan` and `rear_scan` into a single laser scan of the same type, published under topic `scan` and/or a point cloud of type `sensor_msgs/PointCloud`, published under topic `pcl`. The difference between both is that the resulting laser scan divides the area into finite number of circular sectors and put one point (or actually one range value) in each section occupied by some measured points, whereas the resulting point cloud simply copies all of the points obtained from sensors.
 
+The input laser scans are firstly rectified to incorporate the motion of the scanner in time.
+
 -----------------------
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1482514/27595821-0aa3519a-5b5e-11e7-9ce0-8f48db4592e4.gif" alt="Visual example of obstacle detector output"/>
@@ -48,23 +49,22 @@ This node converts two messages of type `sensor_msgs/LaserScan` from topics `fro
 </p>
 -----------------------
 
-The resulting messages contain geometric data described with respect to a specific coordinate frame (e.g. `scanners_base`). Assuming that the coordinate frames attached to two laser scanners are called `front_scanner` and `rear_scanner`, both transformation from `scanners_base` frame to `front_scanner` frame and from `scanners_base` frame to `rear_scanner` frame must be provided. The node allows to artificially restrict measured points to some rectangular region around the `scanners_base` frame as well as to limit the resulting laser scan range. The points falling behind this region or ranges excluded from the limit will be discarded.
+The resulting messages contain geometric data described with respect to a specific coordinate frame (e.g. `robot`). Assuming that the coordinate frames attached to two laser scanners are called `front_scanner` and `rear_scanner`, both transformation from `robot` frame to `front_scanner` frame and from `robot` frame to `rear_scanner` frame must be provided. The node allows to artificially restrict measured points to some rectangular region around the `robot` frame as well as to limit the resulting laser scan range. The points falling behind this region will be discarded.
 
-Even if only one laser scanner is used, the node can be useful for simple data pre-processing, e.g. range restriction or recalculation of points to a different coordinate frame. The node uses the following set of local parameters:
+Even if only one laser scanner is used, the node can be useful for simple data pre-processing, e.g. rectification, range restriction or recalculation of points to a different coordinate frame. The node uses the following set of local parameters:
 
 * `~active` (`bool`, default: `true`) - active/sleep mode,
-* `~publish_scan` (`bool`, default: `true`) - publish the merged laser scan message,
-* `~publish_pcl` (`bool`, default: `false`) - publish the merged point cloud message,
+* `~publish_scan` (`bool`, default: `false`) - publish the merged laser scan message,
+* `~publish_pcl` (`bool`, default: `true`) - publish the merged point cloud message,
 * `~ranges_num` (`int`, default: `1000`) - number of ranges (circular sectors) contained in the 360 deg laser scan message,
 * `~min_scanner_range` (`double`, default: `0.05`) - minimal allowable range value for produced laser scan message,
 * `~max_scanner_range` (`double`, default: `10.0`) - maximal allowable range value for produced laser scan message,
-* `~max_x_range` (`double`, default: `10.0`) - limitation for points coordinates (points with coordinates behind these limitations will be discarded),
-* `~min_x_range` (`double`, default: `-10.0`) - as above,
-* `~max_y_range` (`double`, default: `10.0`) - as above,
+* `~min_x_range` (`double`, default: `-10.0`) - limitation for points coordinates (points with coordinates behind these limitations will be discarded),
+* `~max_x_range` (`double`, default: `10.0`) - as above,
 * `~min_y_range` (`double`, default: `-10.0`) - as above,
-* `~front_scan_frame_id` (`string`, default: `front_scanner`) - name of the coordinate frame attached to the front scanner,
-* `~rear_scan_frame_id` (`string`, default: `rear_scanner`) - name of the coordinate frame attached to the rear scanner,
-* `~target_frame_id` (`string`, default: `scanners_base`) - name of the coordinate frame used as the origin for the produced laser scan or point cloud.
+* `~max_y_range` (`double`, default: `10.0`) - as above,
+* `~fixed_frame_id` (`string`, default: `map`) - name of the fixed coordinate frame used for scan rectification in time (see `laser_geometry` package),
+* `~target_frame_id` (`string`, default: `robot`) - name of the coordinate frame used as the origin for the produced laser scan or point cloud.
 
 The package comes with Rviz panel for this node.
 
@@ -93,23 +93,23 @@ The input points are firstly grouped into subsets. The algorithm extracts segmen
 The node is configurable with the following set of local parameters:
 
 * `~active` (`bool`, default: `true`) - active/sleep mode,
-* `~use_scan` (`bool`, default: `true`) - use laser scan messages,
-* `~use_pcl` (`bool`, default: `false`) - use point cloud messages (if both scan and pcl are chosen, scans will have priority),
+* `~use_scan` (`bool`, default: `false`) - use laser scan messages,
+* `~use_pcl` (`bool`, default: `true`) - use point cloud messages (if both scan and pcl are chosen, scans will have priority),
 * `~discard_converted_segments` (`bool`, default: `true`) - do not publish segments, from which the circles were spawned,
 * `~transform_coordinates` (`bool`, default: `true`) - transform the coordinates of obstacles to a frame described with `frame_id` parameter,
 * `~frame_id` (`string`, default: `map`) - name of the coordinate frame used as origin for produced obstacles (used only if `transform_coordinates` flag is set to true).
 
 The following set of local parameters is dedicated to the algorithm itself:
 
-* `~use_split_and_merge` (`bool`, default: `false`) - choose wether to use Iterative End Point Fit (false) or Split And Merge (true) algorithm to detect segments,
+* `~use_split_and_merge` (`bool`, default: `true`) - choose wether to use Iterative End Point Fit (false) or Split And Merge (true) algorithm to detect segments,
 * `~min_group_points` (`int`, default: `5`) - minimum number of points comprising a group to be further processed,
-* `~max_group_distance` (`double`, default: `0.100`) - if the distance between two points is greater than this value, start a new group,
-* `~distance_proportion` (`double`, default: `0.006136`) - enlarge the allowable distance between points proportionally to the range of point (use scan angle increment in radians),
-* `~max_split_distance` (`double`, default: `0.070`) - if a point in group lays further from a leading line than this value, split the group, 
-* `~max_merge_separation` (`double`, default: `0.150`) - if distance between obstacles is smaller than this value, consider merging them,
-* `~max_merge_spread` (`double`, default: `0.070`) - merge two segments if all of their extreme points lay closer to the leading line than this value,
-* `~max_circle_radius` (`double`, default: `0.500`) - if a circle would have greater radius than this value, skip it, 
-* `~radius_enlargement` (`double`, default: `0.100`) - artificially enlarge the circles radius by this value.
+* `~max_group_distance` (`double`, default: `0.1`) - if the distance between two points is greater than this value, start a new group,
+* `~distance_proportion` (`double`, default: `0.00628`) - enlarge the allowable distance between points proportionally to the range of point (use scan angle increment in radians),
+* `~max_split_distance` (`double`, default: `0.2`) - if a point in group lays further from a leading line than this value, split the group,
+* `~max_merge_separation` (`double`, default: `0.2`) - if distance between obstacles is smaller than this value, consider merging them,
+* `~max_merge_spread` (`double`, default: `0.2`) - merge two segments if all of their extreme points lay closer to the leading line than this value,
+* `~max_circle_radius` (`double`, default: `0.6`) - if a circle would have greater radius than this value, skip it,
+* `~radius_enlargement` (`double`, default: `0.3`) - artificially enlarge the circles radius by this value.
 
 The package comes with Rviz panel for this node.
 

@@ -231,12 +231,12 @@ void ObstaclePublisherPanel::setParams() {
 }
 
 void ObstaclePublisherPanel::getParams() {
-  nh_local_.param<bool>("active", p_active_, true);
-  nh_local_.param<bool>("reset", p_reset_, false);
-  nh_local_.param<bool>("fusion_example", p_fusion_example_, false);
-  nh_local_.param<bool>("fission_example", p_fission_example_, false);
+  p_active_ = nh_local_.param("active", false);
+  p_reset_ = nh_local_.param("reset", false);
+  p_fusion_example_ = nh_local_.param("fusion_example", false);
+  p_fission_example_ = nh_local_.param("fission_example", false);
 
-  nh_local_.param<double>("loop_rate", p_loop_rate_, 10.0);
+  p_loop_rate_ = nh_local_.param("loop_rate", 0.0);
 
   nh_local_.getParam("x_vector", p_x_vector_);
   nh_local_.getParam("y_vector", p_y_vector_);
@@ -245,7 +245,7 @@ void ObstaclePublisherPanel::getParams() {
   nh_local_.getParam("vx_vector", p_vx_vector_);
   nh_local_.getParam("vy_vector", p_vy_vector_);
 
-  nh_local_.getParam("frame_id", p_frame_id_);
+  p_frame_id_ = nh_local_.param("frame_id", std::string(""));
 }
 
 void ObstaclePublisherPanel::evaluateParams() {

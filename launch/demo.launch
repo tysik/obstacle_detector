@@ -27,9 +27,8 @@
     <param name="min_y_range"       value="-10.0"/>
     <param name="max_y_range"       value="10.0"/>
 
-    <param name="front_scan_frame_id" value="front_scanner"/>
-    <param name="rear_scan_frame_id"  value="rear_scanner"/>
-    <param name="target_frame_id"     value="scanner_base"/>
+    <param name="fixed_frame_id"    value="map"/>
+    <param name="target_frame_id"   value="scanner_base"/>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
@@ -46,7 +45,7 @@
     <param name="distance_proportion"  value="0.00628"/>
     <param name="max_split_distance"   value="0.07"/>
     <param name="max_merge_separation" value="0.15"/>
-    <param name="max_merge_spread"     value="0.07"/>
+    <param name="max_merge_spread"     value="0.1"/>
     <param name="max_circle_radius"    value="0.5"/>
     <param name="radius_enlargement"   value="0.25"/>
 

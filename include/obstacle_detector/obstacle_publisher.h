@@ -46,6 +46,7 @@ class ObstaclePublisher
 {
 public:
   ObstaclePublisher(ros::NodeHandle &nh, ros::NodeHandle &nh_local);
+  ~ObstaclePublisher();
 
 private:
   bool updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res);

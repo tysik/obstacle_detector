@@ -47,6 +47,25 @@ ObstaclePublisher::ObstaclePublisher(ros::NodeHandle& nh, ros::NodeHandle& nh_lo
   initialize();
 }
 
+ObstaclePublisher::~ObstaclePublisher() {
+  nh_local_.deleteParam("active");
+  nh_local_.deleteParam("reset");
+  nh_local_.deleteParam("fusion_example");
+  nh_local_.deleteParam("fission_example");
+
+  nh_local_.deleteParam("loop_rate");
+  nh_local_.deleteParam("radius_margin");
+
+  nh_local_.deleteParam("x_vector");
+  nh_local_.deleteParam("y_vector");
+  nh_local_.deleteParam("r_vector");
+
+  nh_local_.deleteParam("vx_vector");
+  nh_local_.deleteParam("vy_vector");
+
+  nh_local_.deleteParam("frame_id");
+}
+
 bool ObstaclePublisher::updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res) {
   bool prev_active = p_active_;
 

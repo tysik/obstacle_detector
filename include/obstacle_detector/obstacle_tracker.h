@@ -51,6 +51,7 @@ namespace obstacle_detector
 class ObstacleTracker {
 public:
   ObstacleTracker(ros::NodeHandle& nh, ros::NodeHandle& nh_local);
+  ~ObstacleTracker();
 
 private:
   bool updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res);

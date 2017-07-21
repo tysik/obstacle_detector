@@ -171,15 +171,15 @@ void ObstacleTrackerPanel::setParams() {
 }
 
 void ObstacleTrackerPanel::getParams() {
-  nh_local_.param<bool>("active", p_active_, true);
+  p_active_ = nh_local_.param("active", false);
 
-  nh_local_.param<double>("loop_rate", p_loop_rate_, 100.0);
-  nh_local_.param<double>("tracking_duration", p_tracking_duration_, 2.0);
-  nh_local_.param<double>("min_correspondence_cost", p_min_correspondence_cost_, 0.3);
-  nh_local_.param<double>("std_correspondence_dev", p_std_correspondence_dev_, 0.15);
-  nh_local_.param<double>("process_variance", p_process_variance_, 0.001);
-  nh_local_.param<double>("process_rate_variance", p_process_rate_variance_, 0.01);
-  nh_local_.param<double>("measurement_variance", p_measurement_variance_, 1.0);
+  p_loop_rate_ = nh_local_.param("loop_rate", 0.0);
+  p_tracking_duration_ = nh_local_.param("tracking_duration", 0.0);
+  p_min_correspondence_cost_ = nh_local_.param("min_correspondence_cost", 0.0);
+  p_std_correspondence_dev_ = nh_local_.param("std_correspondence_dev", 0.0);
+  p_process_variance_ = nh_local_.param("process_variance", 0.0);
+  p_process_rate_variance_ = nh_local_.param("process_rate_variance", 0.0);
+  p_measurement_variance_ = nh_local_.param("measurement_variance", 0.0);
 }
 
 void ObstacleTrackerPanel::evaluateParams() {
