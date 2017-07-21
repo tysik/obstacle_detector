@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh_local("~");
 
   try {
-    ROS_INFO("[Obstacle Extractor]: Initializing Node");
+    ROS_INFO("[Obstacle Extractor]: Initializing node");
     ObstacleExtractor od(nh, nh_local);
     ros::spin();
   }

@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh_local("~");
 
   try {
-    ROS_INFO("[Scans Merger]: Initializing Node");
+    ROS_INFO("[Scans Merger]: Initializing node");
     ScansMerger sm(nh, nh_local);
     ros::spin();
   }

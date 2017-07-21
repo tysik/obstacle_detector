@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh_local("~");
 
   try {
-    ROS_INFO("[Obstacle Tracker]: Initializing Node");
+    ROS_INFO("[Obstacle Tracker]: Initializing node");
     ObstacleTracker ot(nh, nh_local);
     ros::spin();
   }
