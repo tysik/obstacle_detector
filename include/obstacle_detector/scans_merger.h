@@ -90,15 +90,13 @@ private:
 
   double p_min_scanner_range_;
   double p_max_scanner_range_;
-  double p_max_x_range_;
   double p_min_x_range_;
-  double p_max_y_range_;
+  double p_max_x_range_;
   double p_min_y_range_;
+  double p_max_y_range_;
 
   std::string p_fixed_frame_id_;
   std::string p_target_frame_id_;
-  std::string p_front_scan_frame_id_;
-  std::string p_rear_scan_frame_id_;
 };
 
 } // namespace obstacle_detector

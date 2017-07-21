@@ -201,7 +201,7 @@ void ScansMergerPanel::verifyInputs() {
   try { p_max_y_range_ = boost::lexical_cast<double>(y_max_input_->text().toStdString()); }
   catch(boost::bad_lexical_cast &) { p_max_y_range_ = 0.0; y_max_input_->setText("0.0"); }
 
-  p_frame_id_ = frame_id_input_->text().toStdString();
+  p_target_frame_id_ = frame_id_input_->text().toStdString();
 }
 
 void ScansMergerPanel::setParams() {
@@ -218,24 +218,42 @@ void ScansMergerPanel::setParams() {
   nh_local_.setParam("max_y_range", p_max_y_range_);
   nh_local_.setParam("min_y_range", p_min_y_range_);
 
-  nh_local_.setParam("frame_id", p_frame_id_);
+  nh_local_.setParam("target_frame_id", p_target_frame_id_);
 }
 
 void ScansMergerPanel::getParams() {
-  nh_local_.param<int>("ranges_num", p_ranges_num_, 1000);
+  if (!nh_local_.getParam("active", p_active_))
+    p_active_ = false;
 
-  nh_local_.param<bool>("active", p_active_, true);
-  nh_local_.param<bool>("publish_scan", p_publish_scan_, true);
-  nh_local_.param<bool>("publish_pcl", p_publish_pcl_, true);
+  if (!nh_local_.getParam("publish_scan", p_publish_scan_))
+    p_publish_scan_ = false;
 
-  nh_local_.param<double>("min_scanner_range", p_min_scanner_range_, 0.05);
-  nh_local_.param<double>("max_scanner_range", p_max_scanner_range_, 10.0);
-  nh_local_.param<double>("max_x_range", p_max_x_range_,  10.0);
-  nh_local_.param<double>("min_x_range", p_min_x_range_, -10.0);
-  nh_local_.param<double>("max_y_range", p_max_y_range_,  10.0);
-  nh_local_.param<double>("min_y_range", p_min_y_range_, -10.0);
+  if (!nh_local_.getParam("publish_pcl", p_publish_pcl_))
+    p_publish_pcl_ = false;
 
-  nh_local_.param<string>("frame_id", p_frame_id_, "scanner_base");
+  if (!nh_local_.getParam("ranges_num", p_ranges_num_))
+    p_ranges_num_ = 0;
+
+  if (!nh_local_.getParam("min_scanner_range", p_min_scanner_range_))
+    p_min_scanner_range_ = 0.0;
+
+  if (!nh_local_.getParam("max_scanner_range", p_max_scanner_range_))
+    p_max_scanner_range_ = 0.0;
+
+  if (!nh_local_.getParam("max_x_range", p_max_x_range_))
+    p_max_x_range_ = 0.0;
+
+  if (!nh_local_.getParam("min_x_range", p_min_x_range_))
+    p_min_x_range_ = 0.0;
+
+  if (!nh_local_.getParam("max_y_range", p_max_y_range_))
+    p_max_y_range_ = 0.0;
+
+  if (!nh_local_.getParam("min_y_range", p_min_y_range_))
+    p_min_y_range_ = 0.0;
+
+  if (!nh_local_.getParam("target_frame_id", p_target_frame_id_))
+    p_target_frame_id_ = std::string("-");
 }
 
 void ScansMergerPanel::evaluateParams() {
@@ -263,7 +281,8 @@ void ScansMergerPanel::evaluateParams() {
   x_max_input_->setText(QString::number(p_max_x_range_));
   y_min_input_->setText(QString::number(p_min_y_range_));
   y_max_input_->setText(QString::number(p_max_y_range_));
-  frame_id_input_->setText(QString::fromStdString(p_frame_id_));
+
+  frame_id_input_->setText(QString::fromStdString(p_target_frame_id_));
 }
 
 void ScansMergerPanel::notifyParamsUpdate() {

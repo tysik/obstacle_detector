@@ -92,20 +92,21 @@ private:
   ros::ServiceClient params_cli_;
 
   // Parameters
-  int p_ranges_num_;
-
   bool p_active_;
   bool p_publish_scan_;
   bool p_publish_pcl_;
 
+  int p_ranges_num_;
+
   double p_min_scanner_range_;
   double p_max_scanner_range_;
-  double p_max_x_range_;
-  double p_min_x_range_;
-  double p_max_y_range_;
-  double p_min_y_range_;
 
-  std::string p_frame_id_;
+  double p_min_x_range_;
+  double p_max_x_range_;
+  double p_min_y_range_;
+  double p_max_y_range_;
+
+  std::string p_target_frame_id_;
 };
 
 } // namespace obstacle_detector
