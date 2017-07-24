@@ -76,6 +76,7 @@ private:
   QCheckBox* use_scan_checkbox_;
   QCheckBox* use_pcl_checkbox_;
   QCheckBox* use_split_merge_checkbox_;
+  QCheckBox* circ_from_visib_checkbox_;
   QCheckBox* discard_segments_checkbox_;
   QCheckBox* transform_coords_checkbox_;
 
@@ -100,6 +101,7 @@ private:
   bool p_use_pcl_;
 
   bool p_use_split_and_merge_;
+  bool p_circles_from_visibles_;
   bool p_discard_converted_segments_;
   bool p_transform_coordinates_;
 

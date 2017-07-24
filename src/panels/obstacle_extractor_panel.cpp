@@ -46,6 +46,7 @@ ObstacleExtractorPanel::ObstacleExtractorPanel(QWidget* parent) : rviz::Panel(pa
   use_scan_checkbox_ = new QCheckBox("Use scan");
   use_pcl_checkbox_ = new QCheckBox("Use PCL");
   use_split_merge_checkbox_ = new QCheckBox("Use split and merge");
+  circ_from_visib_checkbox_ = new QCheckBox("Use visibles");
   discard_segments_checkbox_ = new QCheckBox("Discard segments");
   transform_coords_checkbox_ = new QCheckBox("Transform coordinates");
 
@@ -78,55 +79,61 @@ ObstacleExtractorPanel::ObstacleExtractorPanel(QWidget* parent) : rviz::Panel(pa
 
   QSpacerItem* margin = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-  QHBoxLayout* layout_1 = new QHBoxLayout;
-  layout_1->addItem(margin);
-  layout_1->addWidget(use_scan_checkbox_);
-  layout_1->addItem(margin);
-  layout_1->addWidget(use_pcl_checkbox_);
-  layout_1->addItem(margin);
+  QHBoxLayout* scan_pcl_layout = new QHBoxLayout;
+  scan_pcl_layout->addItem(margin);
+  scan_pcl_layout->addWidget(use_scan_checkbox_);
+  scan_pcl_layout->addItem(margin);
+  scan_pcl_layout->addWidget(use_pcl_checkbox_);
+  scan_pcl_layout->addItem(margin);
 
   QGroupBox* segmentation_box = new QGroupBox("Segmentation:");
-  QGridLayout* layout_2 = new QGridLayout;
-  layout_2->addWidget(new QLabel("N<sub>min</sub>:"), 0, 0, Qt::AlignRight);
-  layout_2->addWidget(min_n_input_, 0, 1);
-  layout_2->addWidget(new QLabel("   "), 0, 2);
-  layout_2->addWidget(new QLabel("d<sub>p</sub>:"), 0, 3, Qt::AlignRight);
-  layout_2->addWidget(dist_prop_input_, 0, 4);
-  layout_2->addWidget(new QLabel(""), 0, 5);
+  QGridLayout* segmentation_layout = new QGridLayout;
+  segmentation_layout->addWidget(new QLabel("N<sub>min</sub>:"), 0, 0, Qt::AlignRight);
+  segmentation_layout->addWidget(min_n_input_, 0, 1);
+  segmentation_layout->addWidget(new QLabel("   "), 0, 2);
+  segmentation_layout->addWidget(new QLabel("d<sub>p</sub>:"), 0, 3, Qt::AlignRight);
+  segmentation_layout->addWidget(dist_prop_input_, 0, 4);
+  segmentation_layout->addWidget(new QLabel(""), 0, 5);
 
-  layout_2->addWidget(new QLabel("d<sub>group</sub>:"), 1, 0, Qt::AlignRight);
-  layout_2->addWidget(group_dist_input_, 1, 1);
-  layout_2->addWidget(new QLabel("m  "), 1, 2, Qt::AlignLeft);
-  layout_2->addWidget(new QLabel("d<sub>split</sub>:"), 1, 3, Qt::AlignRight);
-  layout_2->addWidget(split_dist_input_, 1, 4);
-  layout_2->addWidget(new QLabel("m"), 1, 5, Qt::AlignLeft);
+  segmentation_layout->addWidget(new QLabel("d<sub>group</sub>:"), 1, 0, Qt::AlignRight);
+  segmentation_layout->addWidget(group_dist_input_, 1, 1);
+  segmentation_layout->addWidget(new QLabel("m  "), 1, 2, Qt::AlignLeft);
+  segmentation_layout->addWidget(new QLabel("d<sub>split</sub>:"), 1, 3, Qt::AlignRight);
+  segmentation_layout->addWidget(split_dist_input_, 1, 4);
+  segmentation_layout->addWidget(new QLabel("m"), 1, 5, Qt::AlignLeft);
 
-  layout_2->addWidget(new QLabel("d<sub>sep</sub>:"), 2, 0, Qt::AlignRight);
-  layout_2->addWidget(merge_sep_input_, 2, 1);
-  layout_2->addWidget(new QLabel("m  "), 2, 2, Qt::AlignLeft);
-  layout_2->addWidget(new QLabel("d<sub>spread</sub>:"), 2, 3, Qt::AlignRight);
-  layout_2->addWidget(merge_spread_input_, 2, 4);
-  layout_2->addWidget(new QLabel("m"), 2, 5, Qt::AlignLeft);
+  segmentation_layout->addWidget(new QLabel("d<sub>sep</sub>:"), 2, 0, Qt::AlignRight);
+  segmentation_layout->addWidget(merge_sep_input_, 2, 1);
+  segmentation_layout->addWidget(new QLabel("m  "), 2, 2, Qt::AlignLeft);
+  segmentation_layout->addWidget(new QLabel("d<sub>spread</sub>:"), 2, 3, Qt::AlignRight);
+  segmentation_layout->addWidget(merge_spread_input_, 2, 4);
+  segmentation_layout->addWidget(new QLabel("m"), 2, 5, Qt::AlignLeft);
 
-  layout_2->addWidget(use_split_merge_checkbox_, 3, 0, 1, 6, Qt::AlignCenter);
-  segmentation_box->setLayout(layout_2);
+  segmentation_layout->addWidget(use_split_merge_checkbox_, 3, 0, 1, 6, Qt::AlignCenter);
+  segmentation_box->setLayout(segmentation_layout);
 
   QGroupBox* circle_box = new QGroupBox("Circularization:");
-  QGridLayout* layout_3 = new QGridLayout;
-  layout_3->addWidget(new QLabel("r<sub>max</sub>:"), 0, 0, Qt::AlignRight);
-  layout_3->addWidget(max_radius_input_, 0, 1);
-  layout_3->addWidget(new QLabel("m "), 0, 2, Qt::AlignLeft);
-  layout_3->addWidget(new QLabel("r<sub>margin</sub>:"), 0, 3, Qt::AlignRight);
-  layout_3->addWidget(radius_enl_input_, 0, 4);
-  layout_3->addWidget(new QLabel("m"), 0, 5, Qt::AlignLeft);
+  QGridLayout* circ_limits_layout = new QGridLayout;
+  circ_limits_layout->addWidget(new QLabel("r<sub>max</sub>:"), 0, 0, Qt::AlignRight);
+  circ_limits_layout->addWidget(max_radius_input_, 0, 1);
+  circ_limits_layout->addWidget(new QLabel("m "), 0, 2, Qt::AlignLeft);
+  circ_limits_layout->addWidget(new QLabel("r<sub>margin</sub>:"), 0, 3, Qt::AlignRight);
+  circ_limits_layout->addWidget(radius_enl_input_, 0, 4);
+  circ_limits_layout->addWidget(new QLabel("m"), 0, 5, Qt::AlignLeft);
 
-  layout_3->addWidget(discard_segments_checkbox_, 1, 0, 1, 6, Qt::AlignCenter);
-  circle_box->setLayout(layout_3);
+  QHBoxLayout* circ_checks_layout = new QHBoxLayout;
+  circ_checks_layout->addWidget(discard_segments_checkbox_, 0, Qt::AlignCenter);
+  circ_checks_layout->addWidget(circ_from_visib_checkbox_, 0, Qt::AlignCenter);
+
+  QVBoxLayout* circ_layout = new QVBoxLayout;
+  circ_layout->addLayout(circ_limits_layout);
+  circ_layout->addLayout(circ_checks_layout);
+  circle_box->setLayout(circ_layout);
 
   QGroupBox* frame_box = new QGroupBox("Frames:");
   QGridLayout* layout_4 = new QGridLayout;
   layout_4->addItem(margin, 0, 0, 2, 1);
-  layout_4->addWidget(new QLabel("Frame ID:"), 0, 1, Qt::AlignRight);
+  layout_4->addWidget(new QLabel("Target frame:"), 0, 1, Qt::AlignRight);
   layout_4->addWidget(frame_id_input_, 0, 2, Qt::AlignLeft);
   layout_4->addWidget(transform_coords_checkbox_, 1, 1, 1, 2, Qt::AlignCenter);
   layout_4->addItem(margin, 0, 3, 2, 1);
@@ -135,7 +142,7 @@ ObstacleExtractorPanel::ObstacleExtractorPanel(QWidget* parent) : rviz::Panel(pa
   QVBoxLayout* layout = new QVBoxLayout;
   layout->addWidget(activate_checkbox_);
   layout->addWidget(lines[0]);
-  layout->addLayout(layout_1);
+  layout->addLayout(scan_pcl_layout);
   layout->addWidget(lines[1]);
   layout->addWidget(segmentation_box);
   layout->addWidget(lines[2]);
@@ -149,6 +156,7 @@ ObstacleExtractorPanel::ObstacleExtractorPanel(QWidget* parent) : rviz::Panel(pa
   connect(use_scan_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
   connect(use_pcl_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
   connect(use_split_merge_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
+  connect(circ_from_visib_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
   connect(discard_segments_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
   connect(transform_coords_checkbox_, SIGNAL(clicked()), this, SLOT(processInputs()));
 
@@ -178,6 +186,7 @@ void ObstacleExtractorPanel::verifyInputs() {
   p_use_pcl_ = use_pcl_checkbox_->isChecked();
 
   p_use_split_and_merge_ = use_split_merge_checkbox_->isChecked();
+  p_circles_from_visibles_ = circ_from_visib_checkbox_->isChecked();
   p_discard_converted_segments_ = discard_segments_checkbox_->isChecked();
   p_transform_coordinates_ = transform_coords_checkbox_->isChecked();
 
@@ -209,14 +218,16 @@ void ObstacleExtractorPanel::verifyInputs() {
 }
 
 void ObstacleExtractorPanel::setParams() {
-  nh_local_.setParam("min_group_points", p_min_group_points_);
-
   nh_local_.setParam("active", p_active_);
   nh_local_.setParam("use_scan", p_use_scan_);
   nh_local_.setParam("use_pcl", p_use_pcl_);
+
   nh_local_.setParam("use_split_and_merge", p_use_split_and_merge_);
+  nh_local_.setParam("circles_from_visibles", p_circles_from_visibles_);
   nh_local_.setParam("discard_converted_segments", p_discard_converted_segments_);
   nh_local_.setParam("transform_coordinates", p_transform_coordinates_);
+
+  nh_local_.setParam("min_group_points", p_min_group_points_);
 
   nh_local_.setParam("max_group_distance", p_max_group_distance_);
   nh_local_.setParam("distance_proportion", p_distance_proportion_);
@@ -236,6 +247,7 @@ void ObstacleExtractorPanel::getParams() {
   p_use_pcl_ = nh_local_.param("use_pcl", false);
 
   p_use_split_and_merge_ = nh_local_.param("use_split_and_merge", false);
+  p_circles_from_visibles_ = nh_local_.param("circles_from_visibles", false);
   p_discard_converted_segments_ = nh_local_.param("discard_converted_segments", false);
   p_transform_coordinates_ = nh_local_.param("transform_coordinates", false);
 
@@ -263,6 +275,9 @@ void ObstacleExtractorPanel::evaluateParams() {
 
   use_split_merge_checkbox_->setEnabled(p_active_);
   use_split_merge_checkbox_->setChecked(p_use_split_and_merge_);
+
+  circ_from_visib_checkbox_->setEnabled(p_active_);
+  circ_from_visib_checkbox_->setChecked(p_circles_from_visibles_);
 
   discard_segments_checkbox_->setEnabled(p_active_);
   discard_segments_checkbox_->setChecked(p_discard_converted_segments_);

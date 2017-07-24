@@ -99,6 +99,7 @@ private:
   bool p_use_pcl_;
 
   bool p_use_split_and_merge_;
+  bool p_circles_from_visibles_;
   bool p_discard_converted_segments_;
   bool p_transform_coordinates_;
 

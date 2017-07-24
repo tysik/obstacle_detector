@@ -53,6 +53,7 @@ ObstacleExtractor::~ObstacleExtractor() {
   nh_local_.deleteParam("use_pcl");
 
   nh_local_.deleteParam("use_split_and_merge");
+  nh_local_.deleteParam("circles_from_visibles");
   nh_local_.deleteParam("discard_converted_segments");
   nh_local_.deleteParam("transform_coordinates");
 
@@ -80,19 +81,21 @@ bool ObstacleExtractor::updateParams(std_srvs::Empty::Request &req, std_srvs::Em
   nh_local_.param<bool>("active", p_active_, true);
   nh_local_.param<bool>("use_scan", p_use_scan_, false);
   nh_local_.param<bool>("use_pcl", p_use_pcl_, true);
+
   nh_local_.param<bool>("use_split_and_merge", p_use_split_and_merge_, true);
+  nh_local_.param<bool>("circles_from_visibles", p_circles_from_visibles_, true);
   nh_local_.param<bool>("discard_converted_segments", p_discard_converted_segments_, true);
   nh_local_.param<bool>("transform_coordinates", p_transform_coordinates_, true);
 
   nh_local_.param<int>("min_group_points", p_min_group_points_, 5);
 
-  nh_local_.param<double>("max_group_distance", p_max_group_distance_, 0.100);
-  nh_local_.param<double>("distance_proportion", p_distance_proportion_, 0.006136);
-  nh_local_.param<double>("max_split_distance", p_max_split_distance_, 0.070);
-  nh_local_.param<double>("max_merge_separation", p_max_merge_separation_, 0.150);
-  nh_local_.param<double>("max_merge_spread", p_max_merge_spread_, 0.070);
-  nh_local_.param<double>("max_circle_radius", p_max_circle_radius_, 0.500);
-  nh_local_.param<double>("radius_enlargement", p_radius_enlargement_, 0.100);
+  nh_local_.param<double>("max_group_distance", p_max_group_distance_, 0.1);
+  nh_local_.param<double>("distance_proportion", p_distance_proportion_, 0.00628);
+  nh_local_.param<double>("max_split_distance", p_max_split_distance_, 0.2);
+  nh_local_.param<double>("max_merge_separation", p_max_merge_separation_, 0.2);
+  nh_local_.param<double>("max_merge_spread", p_max_merge_spread_, 0.2);
+  nh_local_.param<double>("max_circle_radius", p_max_circle_radius_, 0.6);
+  nh_local_.param<double>("radius_enlargement", p_radius_enlargement_, 0.25);
 
   nh_local_.param<double>("min_x_limit", p_min_x_limit_, -10.0);
   nh_local_.param<double>("max_x_limit", p_max_x_limit_,  10.0);
@@ -322,15 +325,17 @@ bool ObstacleExtractor::checkSegmentsCollinearity(const Segment& segment, const 
 
 void ObstacleExtractor::detectCircles() {
   for (auto segment = segments_.begin(); segment != segments_.end(); ++segment) {
-    bool segment_is_visible = true;
-    for (const PointSet& ps : segment->point_sets) {
-      if (!ps.is_visible) {
-        segment_is_visible = false;
-        break;
+    if (p_circles_from_visibles_) {
+      bool segment_is_visible = true;
+      for (const PointSet& ps : segment->point_sets) {
+        if (!ps.is_visible) {
+          segment_is_visible = false;
+          break;
+        }
       }
+      if (!segment_is_visible)
+        continue;
     }
-    if (!segment_is_visible)
-      continue;
 
     Circle circle(*segment);
     circle.radius += p_radius_enlargement_;
@@ -402,18 +407,11 @@ void ObstacleExtractor::publishObstacles() {
   obstacles_msg->header.stamp = stamp_;
 
   if (p_transform_coordinates_) {
-    tf::StampedTransform transform;
-
-    try {
-      tf_listener_.waitForTransform(p_frame_id_, base_frame_id_, stamp_, ros::Duration(10.0));
-      tf_listener_.lookupTransform(p_frame_id_, base_frame_id_, stamp_, transform);
-    }
-    catch (tf::TransformException ex) {
-      ROS_ERROR_STREAM(ex.what());
+    if (!tf_listener_.waitForTransform(p_frame_id_, base_frame_id_, stamp_, ros::Duration(10.0)))
       return;
-    }
 
-    obstacles_msg->header.frame_id = p_frame_id_;
+    tf::StampedTransform transform;
+    tf_listener_.lookupTransform(p_frame_id_, base_frame_id_, stamp_, transform);
 
     tf::Vector3 origin = transform.getOrigin();
     double theta = tf::getYaw(transform.getRotation());
@@ -425,6 +423,8 @@ void ObstacleExtractor::publishObstacles() {
 
     for (Circle& c : circles_)
       c.center = transformPoint(c.center, origin.x(), origin.y(), theta);
+
+    obstacles_msg->header.frame_id = p_frame_id_;
   }
   else
     obstacles_msg->header.frame_id = base_frame_id_;

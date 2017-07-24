@@ -78,7 +78,7 @@ The package comes with Rviz panel for this node.
 
 ### 1.2. The obstacle_extractor node 
 
-This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or messages of type `sensor_msgs/PointCloud` from topic `pcl` into obstacles which are published as messages of custom type `obstacles_detector/Obstacles` under topic `raw_obstacles`. The point cloud message must be ordered in the angular fashion, because the algorithm exploits the polar nature of laser scanners. 
+This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or messages of type `sensor_msgs/PointCloud` from topic `pcl` into obstacles which are published as messages of custom type `obstacles_detector/Obstacles` under topic `raw_obstacles`. The PCL message must be ordered in the angular fashion, because the algorithm exploits the polar nature of laser scanners. 
 
 -----------------------
 <p align="center">
@@ -88,20 +88,17 @@ This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or
 </p>
 -----------------------
 
-The input points are firstly grouped into subsets. The algorithm extracts segments from each points subset. Next, the segments are checked for possible merging between each other. The circular obstacles are extracted from segments and also checked for possible merging. Resulting set of obstacles can be described with respect to coordinate frame provided by the input messages or to other, custom coordinate frame.
+The input points are firstly grouped into subsets and marked as visible or not (if a group is in front of neighbouring groups, it is visible. Otherwise it is assumed to be occluded). The algorithm extracts segments from each points subset. Next, the segments are checked for possible merging between each other. The circular obstacles are then extracted from segments and also merged if possible. Resulting set of obstacles can be transformed to a dedicated coordinate frame.
 
 The node is configurable with the following set of local parameters:
 
 * `~active` (`bool`, default: `true`) - active/sleep mode,
 * `~use_scan` (`bool`, default: `false`) - use laser scan messages,
 * `~use_pcl` (`bool`, default: `true`) - use point cloud messages (if both scan and pcl are chosen, scans will have priority),
+* `~use_split_and_merge` (`bool`, default: `true`) - choose wether to use Iterative End Point Fit (false) or Split And Merge (true) algorithm to detect segments,
+* `~circles_from_visibles` (`bool`, default: `true`) - detect circular obstacles only from fully visible (not occluded) segments,
 * `~discard_converted_segments` (`bool`, default: `true`) - do not publish segments, from which the circles were spawned,
 * `~transform_coordinates` (`bool`, default: `true`) - transform the coordinates of obstacles to a frame described with `frame_id` parameter,
-* `~frame_id` (`string`, default: `map`) - name of the coordinate frame used as origin for produced obstacles (used only if `transform_coordinates` flag is set to true).
-
-The following set of local parameters is dedicated to the algorithm itself:
-
-* `~use_split_and_merge` (`bool`, default: `true`) - choose wether to use Iterative End Point Fit (false) or Split And Merge (true) algorithm to detect segments,
 * `~min_group_points` (`int`, default: `5`) - minimum number of points comprising a group to be further processed,
 * `~max_group_distance` (`double`, default: `0.1`) - if the distance between two points is greater than this value, start a new group,
 * `~distance_proportion` (`double`, default: `0.00628`) - enlarge the allowable distance between points proportionally to the range of point (use scan angle increment in radians),
@@ -109,7 +106,8 @@ The following set of local parameters is dedicated to the algorithm itself:
 * `~max_merge_separation` (`double`, default: `0.2`) - if distance between obstacles is smaller than this value, consider merging them,
 * `~max_merge_spread` (`double`, default: `0.2`) - merge two segments if all of their extreme points lay closer to the leading line than this value,
 * `~max_circle_radius` (`double`, default: `0.6`) - if a circle would have greater radius than this value, skip it,
-* `~radius_enlargement` (`double`, default: `0.3`) - artificially enlarge the circles radius by this value.
+* `~radius_enlargement` (`double`, default: `0.25`) - artificially enlarge the circles radius by this value,
+* `~frame_id` (`string`, default: `map`) - name of the coordinate frame used as origin for produced obstacles (used only if `transform_coordinates` flag is set to true).
 
 The package comes with Rviz panel for this node.
 

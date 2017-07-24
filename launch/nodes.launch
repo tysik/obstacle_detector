@@ -23,12 +23,14 @@
   </node>
 
   <node pkg="obstacle_detector" type="obstacle_extractor_node" name="obstacle_extractor" machine="$(arg machine)">
-    <param name="active"               value="false"/>
-    <param name="use_scan"             value="true"/>
-    <param name="use_pcl"              value="false"/>
-    <param name="use_split_and_merge"  value="false"/>
+    <param name="active"               value="true"/>
+    <param name="use_scan"             value="false"/>
+    <param name="use_pcl"              value="true"/>
+
+    <param name="use_split_and_merge"    value="true"/>
+    <param name="circles_from_visibles"  value="true"/>
     <param name="discard_converted_segments" value="true"/>
-    <param name="transform_coordinates"      value="true"/>
+    <param name="transform_coordinates"  value="true"/>
 
     <param name="min_group_points"     value="5"/>
 

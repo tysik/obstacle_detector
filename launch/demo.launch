@@ -4,20 +4,20 @@
   <param name="use_sim_time" value="true"/>  
   <node pkg="rosbag" type="play" name="scans_demo" output="screen" args="--clock --loop $(find obstacle_detector)/resources/scans_demo.bag"/>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_scanner_base" args="0 0 0 0 0 0 map scanner_base"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_front_scanner" args="0.23565 -0.0005 0.06795 0 0 0 scanner_base front_scanner"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_rear_scanner" args="-0.23832 0.00542 0.09888 3.141592 0 0 scanner_base rear_scanner"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_scanner_base" args="0 0 0 0 0 0 map robot"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_front_scanner" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_rear_scanner" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/>
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen">
     <param name="num_worker_threads" value="20"/>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="scans_merger" args="load obstacle_detector/ScansMerger nodelet_manager">
-    <param name="ranges_num"        value="1000"/>
-
     <param name="active"            value="true"/>
-    <param name="publish_scan"      value="true"/>
-    <param name="publish_pcl"       value="false"/>
+    <param name="publish_scan"      value="false"/>
+    <param name="publish_pcl"       value="true"/>
+
+    <param name="ranges_num"        value="1000"/>
 
     <param name="min_scanner_range" value="0.05"/>
     <param name="max_scanner_range" value="10.0"/>
@@ -28,26 +28,28 @@
     <param name="max_y_range"       value="10.0"/>
 
     <param name="fixed_frame_id"    value="map"/>
-    <param name="target_frame_id"   value="scanner_base"/>
+    <param name="target_frame_id"   value="robot"/>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
     <param name="active"               value="true"/>
-    <param name="use_scan"             value="true"/>
-    <param name="use_pcl"              value="false"/>
+    <param name="use_scan"             value="false"/>
+    <param name="use_pcl"              value="true"/>
 
-    <param name="use_split_and_merge"        value="false"/>
+    <param name="use_split_and_merge"    value="true"/>
+    <param name="circles_from_visibles"  value="true"/>
     <param name="discard_converted_segments" value="true"/>
-    <param name="transform_coordinates"      value="true"/>
+    <param name="transform_coordinates"  value="true"/>
 
     <param name="min_group_points"     value="5"/>
+
     <param name="max_group_distance"   value="0.1"/>
     <param name="distance_proportion"  value="0.00628"/>
-    <param name="max_split_distance"   value="0.07"/>
-    <param name="max_merge_separation" value="0.15"/>
-    <param name="max_merge_spread"     value="0.1"/>
-    <param name="max_circle_radius"    value="0.5"/>
-    <param name="radius_enlargement"   value="0.25"/>
+    <param name="max_split_distance"   value="0.2"/>
+    <param name="max_merge_separation" value="0.2"/>
+    <param name="max_merge_spread"     value="0.2"/>
+    <param name="max_circle_radius"    value="0.6"/>
+    <param name="radius_enlargement"   value="0.3"/>
 
     <param name="frame_id"             value="map"/>
   </node>
