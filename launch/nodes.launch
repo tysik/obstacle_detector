@@ -62,52 +62,22 @@
   </node>
  
   <node pkg="obstacle_detector" type="obstacle_publisher_node" name="obstacle_publisher" machine="$(arg machine)">
-    <param name="active"           value="false"/>
+    <param name="active"           value="true"/>
     <param name="reset"            value="false"/>
+
     <param name="fusion_example"   value="false"/>
     <param name="fission_example"  value="false"/>
 
-    <param name="loop_rate"        value="100.0"/>
+    <param name="loop_rate"        value="10.0"/>
     <param name="radius_margin"    value="0.25"/>
 
-    <param name="frame_id"         value="world"/>
-
-<!--
-    <rosparam param="x_vector">[1.0]</rosparam>
-    <rosparam param="y_vector">[0.0]</rosparam>
-    <rosparam param="r_vector">[0.5]</rosparam>
-    <rosparam param="vx_vector">[0.0]</rosparam>
-    <rosparam param="vy_vector">[0.0]</rosparam>
-
-    <rosparam param="x_vector">[-3.0, 3.0]</rosparam>
-    <rosparam param="y_vector">[0.0, 0.0]</rosparam>
-    <rosparam param="r_vector">[1.0, 1.0]</rosparam>
-    <rosparam param="vx_vector">[0.0, 0.0]</rosparam>
-    <rosparam param="vy_vector">[0.0, 0.0]</rosparam>
-
-    <rosparam param="x_vector">[-1.0, 0.0, 1.0]</rosparam>
-    <rosparam param="y_vector">[0.0, -1.0, 0.0]</rosparam>
-    <rosparam param="r_vector">[0.5, 0.5, 0.5]</rosparam>
-    <rosparam param="vx_vector">[0.0, 0.0, 0.0]</rosparam>
-    <rosparam param="vy_vector">[0.0, 0.0, 0.0]</rosparam>
-
-    <rosparam param="x_vector">[-2, 0, 2, -3, -1, 1, 3, -2, 0, 2]</rosparam>
-    <rosparam param="y_vector">[2, 2, 2, 0, 0, 0, 0, -2, -2, -2]</rosparam>
-    <rosparam param="r_vector">[0.5, 0.5, 0.5, 0.8, 0.5, 0.5, 0.8, 0.5, 0.5, 0.5]</rosparam>
-    <rosparam param="vx_vector">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</rosparam>
-    <rosparam param="vy_vector">[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</rosparam>
-
-    <rosparam param="x_vector">[-3.0, -2.5, -2.5, -1.0, -1.0, -0.5, 0.2, 2.0, 4.5, 4.0, 1.5]</rosparam>
-    <rosparam param="y_vector">[1.5, 0.0, -2.5, 3.0, 1.0, -4.0, -0.9, 0.0, 0.0, 2.0, 2.0]</rosparam>
-    <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
-    <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
-    <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
--->
     <rosparam param="x_vector">[-3.0, -2.5, -2.5, -1.0, -1.0, -0.5, 2.5, 0.2, 2.0, 4.5, 4.0, 1.5]</rosparam>
     <rosparam param="y_vector">[1.5, 0.0, -2.5, 3.0, 1.0, -4.0, -3.0, -0.9, 0.0, 0.0, 2.0, 2.0]</rosparam>
     <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 1.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
     <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
     <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+
+    <param name="frame_id"         value="map"/>
   </node>
 
 </launch>

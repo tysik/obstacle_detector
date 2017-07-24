@@ -141,8 +141,8 @@ The node works in a synchronous manner with the default rate of 100 Hz. If detec
 * `~std_correspondence_dev` (`double`, default `0.15`) - (experimental) standard deviation of the position ellipse in the correspondence test,
 * `~process_variance` (`double`, default `0.01`) - variance of obstacles position and radius (parameter of Kalman Filter),
 * `~process_rate_variance` (`double`, default `0.1`) - variance of rate of change of obstacles values (parameter of Kalman Filter),
-* `~measurement_variance` (`double`, default `1.0`) - variance of measured obstacles values (parameter of Kalman Filter).
-* `~frame_id` (`string`, default: `map`) - name of the coordinate frame in which the obstacles are described.
+* `~measurement_variance` (`double`, default `1.0`) - variance of measured obstacles values (parameter of Kalman Filter),
+* `~frame_id` (`string`, default: `map`) - name of the coordinate frame in which the obstacles are described,
 
 The package comes with Rviz panel for this node.
 
@@ -156,11 +156,15 @@ The package comes with Rviz panel for this node.
 
 ### 1.4. The obstacle_publisher node
 
-The auxiliary node which allows to publishes a set of virtual, circular obstacles in the form of message of type `obstacles_detector/Obstacles` under topic `obstacles`. The node is mostly used for off-line tests. The following parameters are used to configure the node:
+The auxiliary node which allows to publish a set of virtual, circular obstacles in the form of message of type `obstacles_detector/Obstacles` under topic `obstacles`. The node is mostly used for off-line tests. The following parameters are used to configure the node:
 
-* `~active` (`bool`, default: `false`) - active/sleep mode,
-* `~reset` (`bool`, default: `false`) - reset time for obstacles motion calculation,
-* `~loop_rate` (`double`, default: `10.0`) - the main loop rate in Hz.
+* `~active` (`bool`, default: `true`) - active/sleep mode,
+* `~reset` (`bool`, default: `false`) - reset time for obstacles motion calculation (used by dedicated Rviz panel),
+* `~fusion_example` (`bool`, default: `false`) - produce obstacles showing fusion,
+* `~fission_example` (`bool`, default: `false`) - produce obstacles showing fission,
+* `~radius_margin` (`double`, default: `0.25`) - artificially enlarge the circles radius by this value in meters,
+* `~loop_rate` (`double`, default: `10.0`) - the main loop rate in Hz,
+* `~frame_id` (`string`, default: `map`) - name of the coordinate frame in which the obstacles are described.
 
 The following parameters are used to provide the node with a set of obstacles:
 

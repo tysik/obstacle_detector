@@ -50,6 +50,7 @@ ObstaclePublisher::ObstaclePublisher(ros::NodeHandle& nh, ros::NodeHandle& nh_lo
 ObstaclePublisher::~ObstaclePublisher() {
   nh_local_.deleteParam("active");
   nh_local_.deleteParam("reset");
+
   nh_local_.deleteParam("fusion_example");
   nh_local_.deleteParam("fission_example");
 
@@ -69,8 +70,9 @@ ObstaclePublisher::~ObstaclePublisher() {
 bool ObstaclePublisher::updateParams(std_srvs::Empty::Request& req, std_srvs::Empty::Response& res) {
   bool prev_active = p_active_;
 
-  nh_local_.param<bool>("active", p_active_, false);
+  nh_local_.param<bool>("active", p_active_, true);
   nh_local_.param<bool>("reset", p_reset_, false);
+
   nh_local_.param<bool>("fusion_example", p_fusion_example_, false);
   nh_local_.param<bool>("fission_example", p_fission_example_, false);
 
@@ -84,7 +86,7 @@ bool ObstaclePublisher::updateParams(std_srvs::Empty::Request& req, std_srvs::Em
   nh_local_.getParam("vx_vector", p_vx_vector_);
   nh_local_.getParam("vy_vector", p_vy_vector_);
 
-  nh_local_.getParam("frame_id", p_frame_id_);
+  nh_local_.param<string>("frame_id", p_frame_id_, string("map"));
 
   p_sampling_time_ = 1.0 / p_loop_rate_;
   timer_.setPeriod(ros::Duration(p_sampling_time_), false);
@@ -136,7 +138,8 @@ void ObstaclePublisher::timerCallback(const ros::TimerEvent& e) {
   else if (p_fission_example_)
     fissionExample(t_);
 
-  publishObstacles();
+  if (obstacles_.circles.size() > 0)
+    publishObstacles();
 }
 
 void ObstaclePublisher::calculateObstaclesPositions(double dt) {
