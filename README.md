@@ -70,7 +70,7 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595818-0aa122b2-5b5e-11e7-9cec-8c50a3ff8fe3.png" alt="Rviz panel for the scans_merger node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/28522255-97e2c210-7077-11e7-8ca1-556790b043e6.png" alt="Rviz panel for the scans_merger node."/>
   <br/>
   Fig. 3. Rviz panel for the scans_merger node.
 </p>
@@ -113,7 +113,7 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595820-0aa28328-5b5e-11e7-900d-199543b8086e.png" alt="Rviz panel for the obstacle_extractor node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/28522256-97e4d0be-7077-11e7-81fa-c2fcaae944be.png" alt="Rviz panel for the obstacle_extractor node."/>
   <br/>
   Fig. 5. Rviz panel for the obstacle_extractor node.
 </p>
@@ -207,10 +207,6 @@ Provided launch files are good examples of how to use `obstacle_detector` packag
 ## 4. The displays
 
 For better visual effects, appropriate Rviz display for `Obstacles` messages was prepared. Via its properties, one can change the colors of the obstacles.
-
-## In progress
-
-The current work focuses on preparing a scans rectifier node which can correct the scans in the moving frames.
 
 Author:
 _Mateusz Przybyla_
