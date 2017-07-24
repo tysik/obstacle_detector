@@ -2,9 +2,8 @@
 <launch>
 
   <arg name="manager" doc="Name of the nodelet manager"/>
-  <arg name="machine" doc="Name of the machine on which the nodes should be started"/>
 
-  <node pkg="nodelet" type="nodelet" name="scans_merger" args="load obstacle_detector/ScansMerger $(arg manager)" machine="$(arg machine)">
+  <node name="scans_merger" pkg="nodelet" type="nodelet" args="load obstacle_detector/ScansMerger $(arg manager)">
     <param name="active"            value="true"/>
     <param name="publish_scan"      value="false"/>
     <param name="publish_pcl"       value="true"/>
@@ -23,7 +22,7 @@
     <param name="target_frame_id"   value="robot"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor $(arg manager)" machine="$(arg machine)">
+  <node name="obstacle_extractor" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleExtractor $(arg manager)">
     <param name="active"               value="true"/>
     <param name="use_scan"             value="false"/>
     <param name="use_pcl"              value="true"/>
@@ -46,7 +45,7 @@
     <param name="frame_id"             value="map"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_tracker" args="load obstacle_detector/ObstacleTracker $(arg manager)" machine="$(arg machine)">
+  <node name="obstacle_tracker" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleTracker $(arg manager)">
     <param name="active"                  value="false"/>
 
     <param name="loop_rate"               value="100.0"/>
@@ -62,7 +61,7 @@
     <remap from="tracked_obstacles" to="obstacles"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_publisher" args="load obstacle_detector/ObstaclePublisher $(arg manager)" machine="$(arg machine)">
+  <node name="obstacle_publisher" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstaclePublisher $(arg manager)">
     <param name="active"           value="true"/>
     <param name="reset"            value="false"/>
 

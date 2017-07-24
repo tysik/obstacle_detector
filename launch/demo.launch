@@ -2,17 +2,17 @@
 <launch>
 
   <param name="use_sim_time" value="true"/>  
-  <node pkg="rosbag" type="play" name="scans_demo" output="screen" args="--clock --loop $(find obstacle_detector)/resources/scans_demo.bag"/>
+  <node name="scans_demo" pkg="rosbag" type="play" output="screen" args="--clock --loop $(find obstacle_detector)/resources/scans_demo.bag"/>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_scanner_base" args="0 0 0 0 0 0 map robot"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_front_scanner" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="scanner_base_to_rear_scanner" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/>
+  <node name="map_to_scanner_base" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map robot"/>
+  <node name="scanner_base_to_front_scanner" pkg="tf2_ros" type="static_transform_publisher" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
+  <node name="scanner_base_to_rear_scanner" pkg="tf2_ros" type="static_transform_publisher" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/>
 
-  <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen">
+  <node name="nodelet_manager" pkg="nodelet" type="nodelet" args="manager" output="screen">
     <param name="num_worker_threads" value="20"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="scans_merger" args="load obstacle_detector/ScansMerger nodelet_manager">
+  <node name="scans_merger" pkg="nodelet" type="nodelet" args="load obstacle_detector/ScansMerger nodelet_manager">
     <param name="active"            value="true"/>
     <param name="publish_scan"      value="false"/>
     <param name="publish_pcl"       value="true"/>
@@ -31,7 +31,7 @@
     <param name="target_frame_id"   value="robot"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
+  <node name="obstacle_extractor" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
     <param name="active"               value="true"/>
     <param name="use_scan"             value="false"/>
     <param name="use_pcl"              value="true"/>
@@ -54,7 +54,7 @@
     <param name="frame_id"             value="map"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_tracker" args="load obstacle_detector/ObstacleTracker nodelet_manager">
+  <node name="obstacle_tracker" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleTracker nodelet_manager">
     <param name="active"                  value="true"/>
 
     <param name="loop_rate"               value="100.0"/>
@@ -70,7 +70,7 @@
     <remap from="tracked_obstacles" to="obstacles"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="obstacle_publisher" args="load obstacle_detector/ObstaclePublisher nodelet_manager">
+  <node name="obstacle_publisher" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstaclePublisher nodelet_manager">
     <param name="active"           value="true"/>
     <param name="reset"            value="false"/>
 
@@ -89,7 +89,7 @@
     <param name="frame_id"         value="map"/>
   </node>
 
-  <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find obstacle_detector)/resources/obstacle_detector.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find obstacle_detector)/resources/obstacle_detector.rviz"/>
 
 </launch>
 <!-- -->

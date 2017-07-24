@@ -1,9 +1,7 @@
 <!-- Reusable launch file for obstacle detection -->
 <launch>
 
-  <arg name="machine" doc="Name of the machine on which the nodes should be started"/>
-
-  <node pkg="obstacle_detector" type="scans_merger_node" name="scans_merger" machine="$(arg machine)">
+  <node name="scans_merger" pkg="obstacle_detector" type="scans_merger_node">
     <param name="active"            value="true"/>
     <param name="publish_scan"      value="false"/>
     <param name="publish_pcl"       value="true"/>
@@ -22,7 +20,7 @@
     <param name="target_frame_id"   value="robot"/>
   </node>
 
-  <node pkg="obstacle_detector" type="obstacle_extractor_node" name="obstacle_extractor" machine="$(arg machine)">
+  <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
     <param name="active"               value="true"/>
     <param name="use_scan"             value="false"/>
     <param name="use_pcl"              value="true"/>
@@ -45,7 +43,7 @@
     <param name="frame_id"             value="map"/>
   </node>
 
-  <node pkg="obstacle_detector" type="obstacle_tracker_node" name="obstacle_tracker" machine="$(arg machine)">
+  <node name="obstacle_tracker" pkg="obstacle_detector" type="obstacle_tracker_node">
     <param name="active"                  value="false"/>
 
     <param name="loop_rate"               value="100.0"/>
@@ -61,7 +59,7 @@
     <remap from="tracked_obstacles" to="obstacles"/>
   </node>
  
-  <node pkg="obstacle_detector" type="obstacle_publisher_node" name="obstacle_publisher" machine="$(arg machine)">
+  <node name="obstacle_publisher" pkg="obstacle_detector" type="obstacle_publisher_node">
     <param name="active"           value="true"/>
     <param name="reset"            value="false"/>
 

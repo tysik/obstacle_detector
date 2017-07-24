@@ -10,6 +10,7 @@ The package requires [Armadillo C++](http://arma.sourceforge.net) library for co
   <br/>
   Fig. 1. Visual example of obstacle detector output.
 </p>
+
 -----------------------
 
 1. The nodes and nodelets
@@ -47,6 +48,7 @@ The input laser scans are firstly rectified to incorporate the motion of the sca
   <br/>
   Fig. 2. Visual example of scans merging with coordinates restrictions.
 </p>
+
 -----------------------
 
 The resulting messages contain geometric data described with respect to a specific coordinate frame (e.g. `robot`). Assuming that the coordinate frames attached to two laser scanners are called `front_scanner` and `rear_scanner`, both transformation from `robot` frame to `front_scanner` frame and from `robot` frame to `rear_scanner` frame must be provided. The node allows to artificially restrict measured points to some rectangular region around the `robot` frame as well as to limit the resulting laser scan range. The points falling behind this region will be discarded.
@@ -74,6 +76,7 @@ The package comes with Rviz panel for this node.
   <br/>
   Fig. 3. Rviz panel for the scans_merger node.
 </p>
+
 -----------------------
 
 ### 1.2. The obstacle_extractor node 
@@ -86,6 +89,7 @@ This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or
   <br/>
   Fig. 4. Visual example of obstacle extractor output.
 </p>
+
 -----------------------
 
 The input points are firstly grouped into subsets and marked as visible or not (if a group is in front of neighbouring groups, it is visible. Otherwise it is assumed to be occluded). The algorithm extracts segments from each points subset. Next, the segments are checked for possible merging between each other. The circular obstacles are then extracted from segments and also merged if possible. Resulting set of obstacles can be transformed to a dedicated coordinate frame.
@@ -117,6 +121,7 @@ The package comes with Rviz panel for this node.
   <br/>
   Fig. 5. Rviz panel for the obstacle_extractor node.
 </p>
+
 -----------------------
 
 ### 1.3. The obstacle_tracker node
@@ -129,6 +134,7 @@ This node tracks and filters the circular obstacles with the use of Kalman filte
   <br/>
   Fig. 6. Visual example of obstacle tracker output.
 </p>
+
 -----------------------
 
 The node works in a synchronous manner with the default rate of 100 Hz. If detected obstacles are published less often, the tracker will supersample them and smoothen their position and radius. The following set of local parameters can be used to tune the node:
@@ -152,6 +158,7 @@ The package comes with Rviz panel for this node.
   <br/>
   Fig. 7. Rviz panel for the obstacle_tracker node.
 </p>
+
 -----------------------
 
 ### 1.4. The obstacle_publisher node
@@ -182,6 +189,7 @@ The package comes with Rviz panel for this node.
   <br/>
   Fig. 9. Rviz panel for the obstacle_publisher node.
 </p>
+
 -----------------------
 
 ## 2. The messages
