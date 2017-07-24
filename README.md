@@ -187,7 +187,7 @@ The package comes with Rviz panel for this node.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1482514/27595824-0ab8778c-5b5e-11e7-93c3-65f8317151ff.png" alt="Rviz panel for the obstacle_publisher node."/>
   <br/>
-  Fig. 9. Rviz panel for the obstacle_publisher node.
+  Fig. 8. Rviz panel for the obstacle_publisher node.
 </p>
 
 -----------------------
