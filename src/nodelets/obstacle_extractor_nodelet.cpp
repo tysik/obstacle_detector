@@ -60,6 +60,10 @@ public:
     }
   }
 
+  virtual ~ObstacleExtractorNodelet() {
+    NODELET_INFO("[Obstacle Extractor]: Shutdown");
+  }
+
 private:
   std::shared_ptr<ObstacleExtractor> obstacle_extractor_;
 };

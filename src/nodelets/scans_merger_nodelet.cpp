@@ -60,6 +60,10 @@ public:
     }
   }
 
+  virtual ~ScansMergerNodelet() {
+    NODELET_INFO("[Scans Merger]: Shutdown");
+  }
+
 private:
   std::shared_ptr<ScansMerger> scans_merger_;
 };

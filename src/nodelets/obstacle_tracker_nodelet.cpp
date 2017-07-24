@@ -60,6 +60,10 @@ public:
     }
   }
 
+  virtual ~ObstacleTrackerNodelet() {
+    NODELET_INFO("[Obstacle Tracker]: Shutdown");
+  }
+
 private:
   std::shared_ptr<ObstacleTracker> obstacle_tracker_;
 };

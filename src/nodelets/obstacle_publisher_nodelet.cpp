@@ -60,6 +60,10 @@ public:
     }
   }
 
+  virtual ~ObstaclePublisherNodelet() {
+    NODELET_INFO("[Obstacle Publisher]: Shutdown");
+  }
+
 private:
   std::shared_ptr<ObstaclePublisher> obstacle_publisher_;
 };

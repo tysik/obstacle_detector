@@ -179,7 +179,6 @@ void ScansMerger::publishMessages() {
     }
   }
 
-
   if (!rear_scan_error_) {
     if (!tf_ls_.waitForTransform(p_target_frame_id_, now, rear_pcl_.header.frame_id, rear_pcl_.header.stamp, p_fixed_frame_id_, ros::Duration(1.0)))
       return;
