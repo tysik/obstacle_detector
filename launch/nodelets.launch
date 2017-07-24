@@ -5,22 +5,22 @@
   <arg name="machine" doc="Name of the machine on which the nodes should be started"/>
 
   <node pkg="nodelet" type="nodelet" name="scans_merger" args="load obstacle_detector/ScansMerger $(arg manager)" machine="$(arg machine)">
-  <param name="active"            value="true"/>
-  <param name="publish_scan"      value="false"/>
-  <param name="publish_pcl"       value="true"/>
+    <param name="active"            value="true"/>
+    <param name="publish_scan"      value="false"/>
+    <param name="publish_pcl"       value="true"/>
 
-  <param name="ranges_num"        value="1000"/>
+    <param name="ranges_num"        value="1000"/>
 
-  <param name="min_scanner_range" value="0.05"/>
-  <param name="max_scanner_range" value="10.0"/>
+    <param name="min_scanner_range" value="0.05"/>
+    <param name="max_scanner_range" value="10.0"/>
 
-  <param name="min_x_range"       value="-10.0"/>
-  <param name="max_x_range"       value="10.0"/>
-  <param name="min_y_range"       value="-10.0"/>
-  <param name="max_y_range"       value="10.0"/>
+    <param name="min_x_range"       value="-10.0"/>
+    <param name="max_x_range"       value="10.0"/>
+    <param name="min_y_range"       value="-10.0"/>
+    <param name="max_y_range"       value="10.0"/>
 
-  <param name="fixed_frame_id"   value="map"/>
-  <param name="target_frame_id"   value="robot"/>
+    <param name="fixed_frame_id"   value="map"/>
+    <param name="target_frame_id"   value="robot"/>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="obstacle_extractor" args="load obstacle_detector/ObstacleExtractor $(arg manager)" machine="$(arg machine)">

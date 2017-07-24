@@ -33,13 +33,13 @@ The nodes are configurable with the use of ROS parameter server. All of the node
 
 All of the nodes can be in either active or sleep mode, triggered by setting the appropriate variable in the parameter server and calling `params` service. In the sleep mode, any subscribers or publishers are shut down and the node does nothing until activated again.
 
-For the ease of use it is recomended to use appropriate Rviz panels provided for the nodes with the package. The Rviz panels communicate via parameter server and service-client calls, therefore the names of the nodes must be preserved unchanges (cf. launch files for examples).
+For the ease of use it is recomended to use appropriate Rviz panels provided for the nodes with the package. The Rviz panels communicate via parameter server and service-client calls, therefore the names of the nodes must be preserved unchanged (cf. launch files for examples).
 
 ### 1.1. The scans_merger node
 
 This node converts two messages of type `sensor_msgs/LaserScan` from topics `front_scan` and `rear_scan` into a single laser scan of the same type, published under topic `scan` and/or a point cloud of type `sensor_msgs/PointCloud`, published under topic `pcl`. The difference between both is that the resulting laser scan divides the area into finite number of circular sectors and put one point (or actually one range value) in each section occupied by some measured points, whereas the resulting point cloud simply copies all of the points obtained from sensors.
 
-The input laser scans are firstly rectified to incorporate the motion of the scanner in time.
+The input laser scans are firstly rectified to incorporate the motion of the scanner in time (see `laser_geometry` package). Next, two PCLs obtained from the previous step are synchronized and transformed into the target coordinate frame at the current point in time.
 
 -----------------------
 <p align="center">
@@ -63,7 +63,7 @@ Even if only one laser scanner is used, the node can be useful for simple data p
 * `~max_x_range` (`double`, default: `10.0`) - as above,
 * `~min_y_range` (`double`, default: `-10.0`) - as above,
 * `~max_y_range` (`double`, default: `10.0`) - as above,
-* `~fixed_frame_id` (`string`, default: `map`) - name of the fixed coordinate frame used for scan rectification in time (see `laser_geometry` package),
+* `~fixed_frame_id` (`string`, default: `map`) - name of the fixed coordinate frame used for scan rectification in time,
 * `~target_frame_id` (`string`, default: `robot`) - name of the coordinate frame used as the origin for the produced laser scan or point cloud.
 
 The package comes with Rviz panel for this node.
