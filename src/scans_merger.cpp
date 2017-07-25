@@ -110,11 +110,15 @@ bool ScansMerger::updateParams(std_srvs::Empty::Request &req, std_srvs::Empty::R
 }
 
 void ScansMerger::frontScanCallback(const sensor_msgs::LaserScan::ConstPtr front_scan) {
-  if (!tf_ls_.waitForTransform(front_scan->header.frame_id, p_fixed_frame_id_,
-                               front_scan->header.stamp + ros::Duration().fromSec(front_scan->ranges.size() * front_scan->time_increment), ros::Duration(1.0)))
+  try {
+    tf_ls_.waitForTransform(front_scan->header.frame_id, p_fixed_frame_id_,
+                            front_scan->header.stamp + ros::Duration().fromSec(front_scan->ranges.size() * front_scan->time_increment), ros::Duration(0.05));
+    projector_.transformLaserScanToPointCloud(p_fixed_frame_id_, *front_scan, front_pcl_, tf_ls_);
+  }
+  catch (tf::TransformException& ex) {
+    front_scan_error_ = true;
     return;
-
-  projector_.transformLaserScanToPointCloud(p_fixed_frame_id_, *front_scan, front_pcl_, tf_ls_);
+  }
 
   front_scan_received_ = true;
   front_scan_error_ = false;
@@ -126,11 +130,15 @@ void ScansMerger::frontScanCallback(const sensor_msgs::LaserScan::ConstPtr front
 }
 
 void ScansMerger::rearScanCallback(const sensor_msgs::LaserScan::ConstPtr rear_scan) {
-  if (!tf_ls_.waitForTransform(rear_scan->header.frame_id, p_fixed_frame_id_,
-                               rear_scan->header.stamp + ros::Duration().fromSec(rear_scan->ranges.size() * rear_scan->time_increment), ros::Duration(1.0)))
+  try {
+    tf_ls_.waitForTransform(rear_scan->header.frame_id, p_fixed_frame_id_,
+                               rear_scan->header.stamp + ros::Duration().fromSec(rear_scan->ranges.size() * rear_scan->time_increment), ros::Duration(0.05));
+    projector_.transformLaserScanToPointCloud(p_fixed_frame_id_, *rear_scan, rear_pcl_, tf_ls_);
+  }
+  catch (tf::TransformException& ex) {
+    rear_scan_error_ = true;
     return;
-
-  projector_.transformLaserScanToPointCloud(p_fixed_frame_id_, *rear_scan, rear_pcl_, tf_ls_);
+  }
 
   rear_scan_received_ = true;
   rear_scan_error_ = false;
@@ -151,10 +159,13 @@ void ScansMerger::publishMessages() {
   ranges.assign(p_ranges_num_, nanf("")); // Assign nan values
 
   if (!front_scan_error_) {
-    if (!tf_ls_.waitForTransform(p_target_frame_id_, now, front_pcl_.header.frame_id, front_pcl_.header.stamp, p_fixed_frame_id_, ros::Duration(1.0)))
+    try {
+      tf_ls_.waitForTransform(p_target_frame_id_, now, front_pcl_.header.frame_id, front_pcl_.header.stamp, p_fixed_frame_id_, ros::Duration(0.05));
+      tf_ls_.transformPointCloud(p_target_frame_id_, now, front_pcl_, p_fixed_frame_id_, new_front_pcl);
+    }
+    catch (tf::TransformException& ex) {
       return;
-
-    tf_ls_.transformPointCloud(p_target_frame_id_, now, front_pcl_, p_fixed_frame_id_, new_front_pcl);
+    }
 
     for (auto& point : new_front_pcl.points) {
       if (point.x > p_min_x_range_ && point.x < p_max_x_range_ &&
@@ -180,10 +191,13 @@ void ScansMerger::publishMessages() {
   }
 
   if (!rear_scan_error_) {
-    if (!tf_ls_.waitForTransform(p_target_frame_id_, now, rear_pcl_.header.frame_id, rear_pcl_.header.stamp, p_fixed_frame_id_, ros::Duration(1.0)))
+    try {
+      tf_ls_.waitForTransform(p_target_frame_id_, now, rear_pcl_.header.frame_id, rear_pcl_.header.stamp, p_fixed_frame_id_, ros::Duration(0.05));
+      tf_ls_.transformPointCloud(p_target_frame_id_, now, rear_pcl_,  p_fixed_frame_id_, new_rear_pcl);
+    }
+    catch (tf::TransformException& ex) {
       return;
-
-    tf_ls_.transformPointCloud(p_target_frame_id_, now, rear_pcl_,  p_fixed_frame_id_, new_rear_pcl);
+    }
 
     for (auto& point : new_rear_pcl.points) {
       if (point.x > p_min_x_range_ && point.x < p_max_x_range_ &&

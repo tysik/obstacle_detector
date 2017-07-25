@@ -407,11 +407,16 @@ void ObstacleExtractor::publishObstacles() {
   obstacles_msg->header.stamp = stamp_;
 
   if (p_transform_coordinates_) {
-    if (!tf_listener_.waitForTransform(p_frame_id_, base_frame_id_, stamp_, ros::Duration(10.0)))
-      return;
-
     tf::StampedTransform transform;
-    tf_listener_.lookupTransform(p_frame_id_, base_frame_id_, stamp_, transform);
+
+    try {
+      tf_listener_.waitForTransform(p_frame_id_, base_frame_id_, stamp_, ros::Duration(0.1));
+      tf_listener_.lookupTransform(p_frame_id_, base_frame_id_, stamp_, transform);
+    }
+    catch (tf::TransformException& ex) {
+      ROS_INFO_STREAM(ex.what());
+      return;
+    }
 
     tf::Vector3 origin = transform.getOrigin();
     double theta = tf::getYaw(transform.getRotation());
