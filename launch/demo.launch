@@ -71,7 +71,7 @@
   </node>
 
   <node name="obstacle_publisher" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstaclePublisher nodelet_manager">
-    <param name="active"           value="true"/>
+    <param name="active"           value="false"/>
     <param name="reset"            value="false"/>
 
     <param name="fusion_example"   value="false"/>
