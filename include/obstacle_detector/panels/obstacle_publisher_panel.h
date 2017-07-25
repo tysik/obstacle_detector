@@ -95,6 +95,8 @@ private:
   QLineEdit* vx_input_;
   QLineEdit* vy_input_;
 
+  QLineEdit* frame_input_;
+
   ros::NodeHandle nh_;
   ros::NodeHandle nh_local_;
 

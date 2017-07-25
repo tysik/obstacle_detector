@@ -44,9 +44,9 @@ The input laser scans are firstly rectified to incorporate the motion of the sca
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595821-0aa3519a-5b5e-11e7-9ce0-8f48db4592e4.gif" alt="Visual example of obstacle detector output"/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595821-0aa3519a-5b5e-11e7-9ce0-8f48db4592e4.gif" alt="Visual example of scans_merger output"/>
   <br/>
-  Fig. 2. Visual example of scans merging with coordinates restrictions.
+  Fig. 2. Visual example of `scans_merger` output.
 </p>
 
 -----------------------
@@ -74,7 +74,7 @@ The package comes with Rviz panel for this node.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1482514/28522255-97e2c210-7077-11e7-8ca1-556790b043e6.png" alt="Rviz panel for the scans_merger node."/>
   <br/>
-  Fig. 3. Rviz panel for the scans_merger node.
+  Fig. 3. Rviz panel for the `scans_merger` node.
 </p>
 
 -----------------------
@@ -85,9 +85,9 @@ This node converts messages of type `sensor_msgs/LaserScan` from topic `scan` or
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595822-0aa50ab2-5b5e-11e7-8061-1da4b947b617.gif" alt="Visual example of obstacle extractor output."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595822-0aa50ab2-5b5e-11e7-8061-1da4b947b617.gif" alt="Visual example of obstacle_extractor output."/>
   <br/>
-  Fig. 4. Visual example of obstacle extractor output.
+  Fig. 4. Visual example of `obstacle_extractor` output.
 </p>
 
 -----------------------
@@ -119,7 +119,7 @@ The package comes with Rviz panel for this node.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1482514/28522256-97e4d0be-7077-11e7-81fa-c2fcaae944be.png" alt="Rviz panel for the obstacle_extractor node."/>
   <br/>
-  Fig. 5. Rviz panel for the obstacle_extractor node.
+  Fig. 5. Rviz panel for the `obstacle_extractor` node.
 </p>
 
 -----------------------
@@ -130,9 +130,9 @@ This node tracks and filters the circular obstacles with the use of Kalman filte
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595819-0aa1bc86-5b5e-11e7-80ed-90c9ea53f69f.gif" alt="Visual example of obstacle tracker output."/>
+  <img src="https://user-images.githubusercontent.com/1482514/27595819-0aa1bc86-5b5e-11e7-80ed-90c9ea53f69f.gif" alt="Visual example of obstacle_tracker output."/>
   <br/>
-  Fig. 6. Visual example of obstacle tracker output.
+  Fig. 6. Visual example of `obstacle_tracker` output.
 </p>
 
 -----------------------
@@ -156,7 +156,7 @@ The package comes with Rviz panel for this node.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1482514/27595823-0aa835a2-5b5e-11e7-9657-8cd129a50aa2.png" alt="Rviz panel for the obstacle_tracker node."/>
   <br/>
-  Fig. 7. Rviz panel for the obstacle_tracker node.
+  Fig. 7. Rviz panel for the `obstacle_tracker` node.
 </p>
 
 -----------------------
@@ -185,9 +185,9 @@ The package comes with Rviz panel for this node.
 
 -----------------------
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1482514/27595824-0ab8778c-5b5e-11e7-93c3-65f8317151ff.png" alt="Rviz panel for the obstacle_publisher node."/>
+  <img src="https://user-images.githubusercontent.com/1482514/28582779-f8de6fca-7166-11e7-8a52-e147cea89f87.png" alt="Rviz panel for the obstacle_publisher node."/>
   <br/>
-  Fig. 8. Rviz panel for the obstacle_publisher node.
+  Fig. 8. Rviz panel for the `obstacle_publisher` node.
 </p>
 
 -----------------------
