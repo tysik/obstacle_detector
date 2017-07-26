@@ -249,8 +249,11 @@ void ObstacleTracker::obstaclesCallback(const obstacle_detector::Obstacles::Cons
 }
 
 double ObstacleTracker::obstacleCostFunction(const CircleObstacle& new_obstacle, const TrackedObstacle& old_obstacle) {
-  // Use Mahalanobis distance
+  // Use Mahalanobis distance squared
   mat P = old_obstacle.getKF().P;
+
+  ROS_INFO_STREAM(P);
+
   mat covariance = { { P(0, 0), P(0, 2), P(0, 4) },
                      { P(2, 0), P(2, 2), P(2, 4) },
                      { P(4, 0), P(4, 2), P(4, 4) } };
@@ -259,7 +262,9 @@ double ObstacleTracker::obstacleCostFunction(const CircleObstacle& new_obstacle,
   vec state = { new_obstacle.center.x, new_obstacle.center.y, new_obstacle.radius };
   mat cost = trans(state - mean) * inv(covariance) * (state - mean);
 
-  return sqrt(cost(0, 0));
+  ROS_INFO_STREAM(cost);
+
+  return cost(0, 0);
 }
 
 double ObstacleTracker::obstacleCostFunction(const CircleObstacle& new_obstacle, const CircleObstacle& old_obstacle) {

@@ -97,6 +97,12 @@ bool ObstaclePublisher::updateParams(std_srvs::Empty::Request& req, std_srvs::Em
       timer_.start();
     }
     else {
+      // Send empty message
+      obstacle_detector::ObstaclesPtr obstacles_msg(new obstacle_detector::Obstacles);
+      obstacles_msg->header.frame_id = p_frame_id_;
+      obstacles_msg->header.stamp = ros::Time::now();
+      obstacle_pub_.publish(obstacles_msg);
+
       obstacle_pub_.shutdown();
       timer_.stop();
     }

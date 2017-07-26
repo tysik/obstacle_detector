@@ -61,9 +61,9 @@
     <param name="tracking_duration"       value="2.0"/>
     <param name="min_correspondence_cost" value="0.6"/>
     <param name="std_correspondence_dev"  value="0.15"/>
-    <param name="process_variance"        value="0.1"/>  
-    <param name="process_rate_variance"   value="0.1"/>  
-    <param name="measurement_variance"    value="1.0"/>  
+    <param name="process_variance"        value="0.0001"/>
+    <param name="process_rate_variance"   value="0.0001"/>
+    <param name="measurement_variance"    value="0.1"/>
 
     <param name="frame_id"                value="map"/>
 
