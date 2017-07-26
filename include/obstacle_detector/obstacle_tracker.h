@@ -60,6 +60,7 @@ private:
 
   void initialize() { std_srvs::Empty empt; updateParams(empt.request, empt.response); }
 
+  double obstacleCostFunction(const CircleObstacle& new_obstacle, const TrackedObstacle& old_obstacle);
   double obstacleCostFunction(const CircleObstacle& new_obstacle, const CircleObstacle& old_obstacle);
   void calculateCostMatrix(const std::vector<CircleObstacle>& new_obstacles, arma::mat& cost_matrix);
   void calculateRowMinIndices(const arma::mat& cost_matrix, std::vector<int>& row_min_indices);
@@ -75,7 +76,7 @@ private:
   void fissureObstacle(const std::vector<int>& fission_indices, const std::vector<int>& row_min_indices,
                        std::vector<TrackedObstacle>& new_tracked, const Obstacles::ConstPtr& new_obstacles);
 
-  void updateObstacles();
+  void predictObstaclesState();
   void publishObstacles();
 
   ros::NodeHandle nh_;

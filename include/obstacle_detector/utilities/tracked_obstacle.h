@@ -43,65 +43,56 @@ namespace obstacle_detector
 
 class TrackedObstacle {
 public:
-  TrackedObstacle(const CircleObstacle& obstacle) : obstacle_(obstacle), kf_x_(0, 1, 2), kf_y_(0, 1, 2), kf_r_(0, 1, 2) {
+  TrackedObstacle(const CircleObstacle& obstacle) : obstacle_(obstacle), kf_(0, 3, 5) {
     fade_counter_ = s_fade_counter_size_;
     initKF();
   }
 
   void predictState() {
-    kf_x_.predictState();
-    kf_y_.predictState();
-    kf_r_.predictState();
+    kf_.predictState();
 
-    obstacle_.center.x = kf_x_.q_pred(0);
-    obstacle_.center.y = kf_y_.q_pred(0);
+    obstacle_.center.x = kf_.q_pred(0);
+    obstacle_.velocity.x = kf_.q_pred(1);
 
-    obstacle_.velocity.x = kf_x_.q_pred(1);
-    obstacle_.velocity.y = kf_y_.q_pred(1);
+    obstacle_.center.y = kf_.q_pred(2);
+    obstacle_.velocity.y = kf_.q_pred(3);
 
-    obstacle_.radius = kf_r_.q_pred(0);
+    obstacle_.radius = kf_.q_pred(4);
 
     fade_counter_--;
   }
 
   void correctState(const CircleObstacle& new_obstacle) {
-    kf_x_.y(0) = new_obstacle.center.x;
-    kf_y_.y(0) = new_obstacle.center.y;
-    kf_r_.y(0) = new_obstacle.radius;
+    kf_.y(0) = new_obstacle.center.x;
+    kf_.y(1) = new_obstacle.center.y;
+    kf_.y(2) = new_obstacle.radius;
 
-    kf_x_.correctState();
-    kf_y_.correctState();
-    kf_r_.correctState();
+    kf_.correctState();
 
-    obstacle_.center.x = kf_x_.q_est(0);
-    obstacle_.center.y = kf_y_.q_est(0);
+    obstacle_.center.x = kf_.q_est(0);
+    obstacle_.velocity.x = kf_.q_est(1);
 
-    obstacle_.velocity.x = kf_x_.q_est(1);
-    obstacle_.velocity.y = kf_y_.q_est(1);
+    obstacle_.center.y = kf_.q_est(2);
+    obstacle_.velocity.y = kf_.q_est(3);
 
-    obstacle_.radius = kf_r_.q_est(0);
+    obstacle_.radius = kf_.q_est(4);
 
     fade_counter_ = s_fade_counter_size_;
   }
 
   void updateState() {
-    kf_x_.predictState();
-    kf_y_.predictState();
-    kf_r_.predictState();
+//    kf_.predictState();
+//    kf_.correctState(); // ? where are measurements ?
 
-    kf_x_.correctState();
-    kf_y_.correctState();
-    kf_r_.correctState();
+//    obstacle_.center.x = kf_.q_est(0);
+//    obstacle_.velocity.x = kf_.q_est(1);
 
-    obstacle_.center.x = kf_x_.q_est(0);
-    obstacle_.center.y = kf_y_.q_est(0);
+//    obstacle_.center.y = kf_.q_est(2);
+//    obstacle_.velocity.y = kf_.q_est(3);
 
-    obstacle_.velocity.x = kf_x_.q_est(1);
-    obstacle_.velocity.y = kf_y_.q_est(1);
+//    obstacle_.radius = kf_.q_est(4);
 
-    obstacle_.radius = kf_r_.q_est(0);
-
-    fade_counter_--;
+//    fade_counter_--;
   }
 
   static void setSamplingTime(double tp) {
@@ -120,53 +111,34 @@ public:
 
   bool hasFaded() const { return ((fade_counter_ <= 0) ? true : false); }
   const CircleObstacle& getObstacle() const { return obstacle_; }
-  const KalmanFilter& getKFx() const { return kf_x_; }
-  const KalmanFilter& getKFy() const { return kf_y_; }
-  const KalmanFilter& getKFr() const { return kf_r_; }
+  const KalmanFilter& getKF() const { return kf_; }
 
 private:
   void initKF() {
-    kf_x_.A(0, 1) = s_sampling_time_;
-    kf_y_.A(0, 1) = s_sampling_time_;
-    kf_r_.A(0, 1) = s_sampling_time_;
+    kf_.A(0, 1) = s_sampling_time_;
+    kf_.A(2, 3) = s_sampling_time_;
 
-    kf_x_.C(0, 0) = 1.0;
-    kf_y_.C(0, 0) = 1.0;
-    kf_r_.C(0, 0) = 1.0;
+    kf_.C(0, 0) = 1.0;
+    kf_.C(1, 2) = 1.0;
+    kf_.C(2, 4) = 1.0;
 
-    kf_x_.R(0, 0) = s_measurement_variance_;
-    kf_y_.R(0, 0) = s_measurement_variance_;
-    kf_r_.R(0, 0) = s_measurement_variance_;
+    kf_.R *= s_measurement_variance_;
 
-    kf_x_.Q(0, 0) = s_process_variance_;
-    kf_r_.Q(0, 0) = s_process_variance_;
-    kf_y_.Q(0, 0) = s_process_variance_;
+    kf_.Q(0, 0) = s_process_variance_;
+    kf_.Q(1, 1) = s_process_rate_variance_;
+    kf_.Q(2, 2) = s_process_variance_;
+    kf_.Q(3, 3) = s_process_rate_variance_;
+    kf_.Q(4, 4) = s_process_variance_;
 
-    kf_x_.Q(1, 1) = s_process_rate_variance_;
-    kf_y_.Q(1, 1) = s_process_rate_variance_;
-    kf_r_.Q(1, 1) = s_process_rate_variance_;
-
-    kf_x_.q_pred(0) = obstacle_.center.x;
-    kf_r_.q_pred(0) = obstacle_.radius;
-    kf_y_.q_pred(0) = obstacle_.center.y;
-
-    kf_x_.q_pred(1) = obstacle_.velocity.x;
-    kf_y_.q_pred(1) = obstacle_.velocity.y;
-
-    kf_x_.q_est(0) = obstacle_.center.x;
-    kf_r_.q_est(0) = obstacle_.radius;
-    kf_y_.q_est(0) = obstacle_.center.y;
-
-    kf_x_.q_est(1) = obstacle_.velocity.x;
-    kf_y_.q_est(1) = obstacle_.velocity.y;
+    kf_.q_est(0) = kf_.q_pred(0) = obstacle_.center.x;
+    kf_.q_est(1) = kf_.q_pred(1) = obstacle_.velocity.x;
+    kf_.q_est(2) = kf_.q_pred(2) = obstacle_.center.y;
+    kf_.q_est(3) = kf_.q_pred(3) = obstacle_.velocity.y;
+    kf_.q_est(4) = kf_.q_pred(4) = obstacle_.radius;
   }
 
   CircleObstacle obstacle_;
-
-  KalmanFilter kf_x_;
-  KalmanFilter kf_y_;
-  KalmanFilter kf_r_;
-
+  KalmanFilter kf_;
   int fade_counter_;
 
   // Common variables
