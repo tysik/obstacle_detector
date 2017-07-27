@@ -48,12 +48,13 @@ public:
     B = mat(n,l).zeros();
     C = mat(m,n).zeros();
 
-    Q = mat(n,n).eye();
-    R = mat(m,m).eye();
-    P = mat(n,n).eye();
-
     K = mat(n,m).eye();
     I = arma::eye<mat>(n,n);
+
+    P = mat(n,n).eye();
+    Q = mat(n,n).eye();
+    R = mat(m,m).eye();    
+    S = mat(m,m).eye();
 
     u = vec(l).zeros();
     q_pred = vec(n).zeros();
@@ -61,11 +62,11 @@ public:
     y = vec(m).zeros();
   }
 
-  void updateInput(const arma::vec& new_u) {
+  void setInput(const arma::vec& new_u) {
     u = new_u;
   }
 
-  void updateMeasurement(const arma::vec& new_y) {
+  void setMeasurement(const arma::vec& new_y) {
     y = new_y;
   }
 
@@ -92,17 +93,17 @@ public:
   arma::mat B;       // Input
   arma::mat C;       // Output
 
-  // Covariance matrices:
-  arma::mat Q;       // Process
-  arma::mat R;       // Measurement
-  arma::mat P;       // Estimate error
-  arma::mat S;       // Innovation
-
   // Kalman gain matrix:
   arma::mat K;
 
   // Identity matrix
   arma::mat I;
+
+  // Covariance matrices:
+  arma::mat P;       // Estimate error
+  arma::mat Q;       // Process
+  arma::mat R;       // Measurement
+  arma::mat S;       // Innovation
 
   // Signals:
   arma::vec u;       // Input
