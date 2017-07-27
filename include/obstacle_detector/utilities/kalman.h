@@ -61,13 +61,22 @@ public:
     y = vec(m).zeros();
   }
 
+  void updateInput(const arma::vec& new_u) {
+    u = new_u;
+  }
+
+  void updateMeasurement(const arma::vec& new_y) {
+    y = new_y;
+  }
+
   void predictState() {
     q_pred = A * q_est + B * u;
     P = A * P * trans(A) + Q;
   }
 
   void correctState() {
-    K = P * trans(C) * inv(C * P * trans(C) + R);
+    S = C * P * trans(C) + R;
+    K = P * trans(C) * inv(S);
     q_est = q_pred + K * (y - C * q_pred);
     P = (I - K * C) * P;
   }
@@ -87,6 +96,7 @@ public:
   arma::mat Q;       // Process
   arma::mat R;       // Measurement
   arma::mat P;       // Estimate error
+  arma::mat S;       // Innovation
 
   // Kalman gain matrix:
   arma::mat K;
