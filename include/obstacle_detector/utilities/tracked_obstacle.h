@@ -81,18 +81,18 @@ public:
   }
 
   void updateState() {
-//    kf_.predictState();
-//    kf_.correctState(); // ? where are measurements ?
+    kf_.predictState();
+    kf_.correctState(); // Measurements are frozen
 
-//    obstacle_.center.x = kf_.q_est(0);
-//    obstacle_.velocity.x = kf_.q_est(1);
+    obstacle_.center.x = kf_.q_est(0);
+    obstacle_.velocity.x = kf_.q_est(1);
 
-//    obstacle_.center.y = kf_.q_est(2);
-//    obstacle_.velocity.y = kf_.q_est(3);
+    obstacle_.center.y = kf_.q_est(2);
+    obstacle_.velocity.y = kf_.q_est(3);
 
-//    obstacle_.radius = kf_.q_est(4);
+    obstacle_.radius = kf_.q_est(4);
 
-//    fade_counter_--;
+    fade_counter_--;
   }
 
   static void setSamplingTime(double tp) {

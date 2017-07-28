@@ -102,7 +102,6 @@ private:
   double p_sampling_time_;
   double p_sensor_rate_;
   double p_min_correspondence_cost_;
-  double p_std_correspondence_dev_;
   double p_process_variance_;
   double p_process_rate_variance_;
   double p_measurement_variance_;

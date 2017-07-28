@@ -59,11 +59,10 @@
 
     <param name="loop_rate"               value="100.0"/>
     <param name="tracking_duration"       value="2.0"/>
-    <param name="min_correspondence_cost" value="0.6"/>
-    <param name="std_correspondence_dev"  value="0.15"/>
-    <param name="process_variance"        value="0.0001"/>
-    <param name="process_rate_variance"   value="0.0001"/>
-    <param name="measurement_variance"    value="0.1"/>
+    <param name="min_correspondence_cost" value="0.1"/>
+    <param name="process_variance"        value="0.001"/>
+    <param name="process_rate_variance"   value="0.001"/>
+    <param name="measurement_variance"    value="1.0"/>  
 
     <param name="frame_id"                value="map"/>
 
@@ -85,13 +84,13 @@
     <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 1.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
     <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
     <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
--->
+
     <rosparam param="x_vector">[1.0]</rosparam>
     <rosparam param="y_vector">[0.0]</rosparam>
     <rosparam param="r_vector">[0.5]</rosparam>
     <rosparam param="vx_vector">[-0.3]</rosparam>
     <rosparam param="vy_vector">[0.0]</rosparam>
-
+-->
     <param name="frame_id"         value="map"/>
 
     <remap from="obstacles" to="raw_obstacles"/>
