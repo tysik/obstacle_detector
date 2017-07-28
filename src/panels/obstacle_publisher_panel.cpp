@@ -51,11 +51,11 @@ ObstaclePublisherPanel::ObstaclePublisherPanel(QWidget* parent) : rviz::Panel(pa
   remove_button_ = new QPushButton("Remove selected");
   reset_button_ = new QPushButton("Reset time");
 
-  x_input_ = new QLineEdit();
-  y_input_ = new QLineEdit();
-  r_input_ = new QLineEdit();
-  vx_input_ = new QLineEdit();
-  vy_input_ = new QLineEdit();
+  x_input_ = new QLineEdit("0.0");
+  y_input_ = new QLineEdit("0.0");
+  r_input_ = new QLineEdit("0.0");
+  vx_input_ = new QLineEdit("0.0");
+  vy_input_ = new QLineEdit("0.0");
   frame_input_ = new QLineEdit();
 
   obstacles_list_->setSelectionMode(QAbstractItemView::MultiSelection);
