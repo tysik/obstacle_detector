@@ -246,13 +246,13 @@ void ObstacleTracker::obstaclesCallback(const obstacle_detector::Obstacles::Cons
 }
 
 double ObstacleTracker::obstacleCostFunction(const CircleObstacle& new_obstacle, const TrackedObstacle& old_obstacle) {
-  double dt = 1.0 / p_loop_rate_;
-
   mat covariance = old_obstacle.getKF().S;
 
   vec v = { old_obstacle.getObstacle().velocity.x, old_obstacle.getObstacle().velocity.y };
 
   double angle = atan2(v(1), v(0));
+
+  double dt = 0.01;
 
   mat scale = { { 1.0 + norm(v), 0.0, 0.0 },
                 { 0.0, 1.0, 0.0 },

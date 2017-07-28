@@ -40,6 +40,8 @@
 class KalmanFilter
 {
 public:
+  explicit KalmanFilter() { }
+
   KalmanFilter(uint dim_in, uint dim_out, uint dim_state) : l(dim_in), m(dim_out), n(dim_state) {
     using arma::mat;
     using arma::vec;
@@ -62,14 +64,6 @@ public:
     y = vec(m).zeros();
   }
 
-  void setInput(const arma::vec& new_u) {
-    u = new_u;
-  }
-
-  void setMeasurement(const arma::vec& new_y) {
-    y = new_y;
-  }
-
   void predictState() {
     q_pred = A * q_est + B * u;
     P = A * P * trans(A) + Q;
@@ -87,7 +81,11 @@ public:
     correctState();
   }
 
-public:
+  // Dimensions:
+  uint l;            // Input
+  uint m;            // Output
+  uint n;            // State
+
   // System matrices:
   arma::mat A;       // State
   arma::mat B;       // Input
@@ -110,10 +108,4 @@ public:
   arma::vec q_pred;  // Predicted state
   arma::vec q_est;   // Estimated state
   arma::vec y;       // Measurement
-
-private:
-  // Dimensions:
-  uint l;             // Input
-  uint m;             // Output
-  uint n;             // State
 };
