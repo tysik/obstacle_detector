@@ -67,12 +67,11 @@ bool ObstacleTracker::updateParams(std_srvs::Empty::Request &req, std_srvs::Empt
 
   nh_local_.param<bool>("active", p_active_, true);
   nh_local_.param<bool>("copy_segments", p_copy_segments_, true);
-
   nh_local_.param<double>("loop_rate", p_loop_rate_, 100.0);
   p_sampling_time_ = 1.0 / p_loop_rate_;
-  p_sensor_rate_ = 10.0;    // 10 Hz for Hokuyo
-
-  nh_local_.param<double>("tracking_duration", p_tracking_duration_, 2.0);
+  nh_local_.param<double>("sensor_rate", p_sensor_rate_, 10.0);  // 10 Hz for Hokuyo URG-04lx-ug01
+  nh_local_.param<double>("fade_in_duration", p_fade_in_duration_, 0.5);
+  nh_local_.param<double>("tracking_duration", p_fade_out_duration_, 2.0);
   nh_local_.param<double>("min_correspondence_cost", p_min_correspondence_cost_, 0.3);
   nh_local_.param<double>("process_variance", p_process_variance_, 0.01);
   nh_local_.param<double>("process_rate_variance", p_process_rate_variance_, 0.1);
@@ -82,7 +81,7 @@ bool ObstacleTracker::updateParams(std_srvs::Empty::Request &req, std_srvs::Empt
   obstacles_.header.frame_id = p_frame_id_;
 
   TrackedObstacle::setSamplingTime(p_sampling_time_);
-  TrackedObstacle::setCounterSize(static_cast<int>(p_loop_rate_ * p_tracking_duration_));
+  TrackedObstacle::setCounterSize(static_cast<int>(p_loop_rate_ * p_fade_out_duration_));
   TrackedObstacle::setCovariances(p_process_variance_, p_process_rate_variance_, p_measurement_variance_);
 
   timer_.setPeriod(ros::Duration(p_sampling_time_), false);
@@ -147,8 +146,6 @@ void ObstacleTracker::obstaclesCallback(const obstacle_detector::Obstacles::Cons
 
   mat cost_matrix;
   calculateCostMatrix(new_obstacles->circles, cost_matrix);
-
-  cout << "---" << endl << cost_matrix << endl << "---" << endl;
 
   vector<int> row_min_indices;
   calculateRowMinIndices(cost_matrix, row_min_indices);
@@ -225,9 +222,9 @@ void ObstacleTracker::obstaclesCallback(const obstacle_detector::Obstacles::Cons
       // Create a new tracked obstacle
       else if (row_min_indices[n] >= T) {
         TrackedObstacle to(untracked_obstacles_[row_min_indices[n] - T]);
+        to.correctState(new_obstacles->circles[n]);
         for (int i = 0; i < static_cast<int>(p_loop_rate_ / p_sensor_rate_); ++i)
           to.updateState();
-        to.correctState(new_obstacles->circles[n]);
         new_tracked_obstacles.push_back(to);
       }
 

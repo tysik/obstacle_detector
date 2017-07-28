@@ -1,19 +1,19 @@
 <!-- Demonstation of obstacle detector -->
 <launch>
-<!--
+<!-- -->
   <param name="use_sim_time" value="true"/>  
-  <node name="scans_demo" pkg="rosbag" type="play" output="screen" args="-clock -loop $(find obstacle_detector)/resources/scans_demo.bag"/>
+  <node name="scans_demo" pkg="rosbag" type="play" output="screen" args="--clock --loop $(find obstacle_detector)/resources/scans_demo.bag"/>
 
   <node name="map_to_scanner_base" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map robot"/>
   <node name="scanner_base_to_front_scanner" pkg="tf2_ros" type="static_transform_publisher" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
   <node name="scanner_base_to_rear_scanner" pkg="tf2_ros" type="static_transform_publisher" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/>
--->
+
   <node name="nodelet_manager" pkg="nodelet" type="nodelet" args="manager" output="screen">
     <param name="num_worker_threads" value="20"/>
   </node>
 
   <node name="scans_merger" pkg="nodelet" type="nodelet" args="load obstacle_detector/ScansMerger nodelet_manager">
-    <param name="active"            value="false"/>
+    <param name="active"            value="true"/>
     <param name="publish_scan"      value="false"/>
     <param name="publish_pcl"       value="true"/>
 
@@ -32,7 +32,7 @@
   </node>
 
   <node name="obstacle_extractor" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
-    <param name="active"               value="false"/>
+    <param name="active"               value="true"/>
     <param name="use_scan"             value="false"/>
     <param name="use_pcl"              value="true"/>
 
@@ -60,8 +60,8 @@
     <param name="loop_rate"               value="100.0"/>
     <param name="tracking_duration"       value="2.0"/>
     <param name="min_correspondence_cost" value="0.1"/>
-    <param name="process_variance"        value="0.001"/>
-    <param name="process_rate_variance"   value="0.001"/>
+    <param name="process_variance"        value="0.01"/>
+    <param name="process_rate_variance"   value="0.01"/>
     <param name="measurement_variance"    value="1.0"/>  
 
     <param name="frame_id"                value="map"/>
@@ -70,7 +70,7 @@
   </node>
 
   <node name="obstacle_publisher" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstaclePublisher nodelet_manager">
-    <param name="active"           value="true"/>
+    <param name="active"           value="false"/>
     <param name="reset"            value="false"/>
 
     <param name="fusion_example"   value="false"/>
@@ -84,13 +84,13 @@
     <rosparam param="r_vector">[0.5, 0.5, 1.5, 0.5, 0.7, 0.5, 1.5, 0.7, 0.7, 1.0, 0.5, 1.0]</rosparam>
     <rosparam param="vx_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
     <rosparam param="vy_vector">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
-
-    <rosparam param="x_vector">[1.0]</rosparam>
-    <rosparam param="y_vector">[0.0]</rosparam>
-    <rosparam param="r_vector">[0.5]</rosparam>
-    <rosparam param="vx_vector">[-0.3]</rosparam>
-    <rosparam param="vy_vector">[0.0]</rosparam>
 -->
+    <rosparam param="x_vector">[-0.5, 0.5]</rosparam>
+    <rosparam param="y_vector">[0.0, 0.0]</rosparam>
+    <rosparam param="r_vector">[0.5, 0.5]</rosparam>
+    <rosparam param="vx_vector">[0.0, 0.0]</rosparam>
+    <rosparam param="vy_vector">[0.0, 0.0]</rosparam>
+
     <param name="frame_id"         value="map"/>
 
     <remap from="obstacles" to="raw_obstacles"/>

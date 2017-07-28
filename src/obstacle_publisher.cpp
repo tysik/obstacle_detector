@@ -109,17 +109,25 @@ bool ObstaclePublisher::updateParams(std_srvs::Empty::Request& req, std_srvs::Em
       p_x_vector_.size() != p_vx_vector_.size() || p_x_vector_.size() != p_vy_vector_.size())
     return false;
 
-  for (int idx = 0; idx < p_x_vector_.size(); ++idx) {
-    CircleObstacle circle;
-    circle.center.x = p_x_vector_[idx];
-    circle.center.y = p_y_vector_[idx];
-    circle.radius = p_r_vector_[idx];
-    circle.true_radius = p_r_vector_[idx] - p_radius_margin_;;
+  if (p_active_ && p_x_vector_.size() == 0) {
+    obstacle_detector::ObstaclesPtr obstacles_msg(new obstacle_detector::Obstacles);
+    obstacles_msg->header.frame_id = p_frame_id_;
+    obstacles_msg->header.stamp = ros::Time::now();
+    obstacle_pub_.publish(obstacles_msg);
+  }
+  else {
+    for (int idx = 0; idx < p_x_vector_.size(); ++idx) {
+      CircleObstacle circle;
+      circle.center.x = p_x_vector_[idx];
+      circle.center.y = p_y_vector_[idx];
+      circle.radius = p_r_vector_[idx];
+      circle.true_radius = p_r_vector_[idx] - p_radius_margin_;;
 
-    circle.velocity.x = p_vx_vector_[idx];
-    circle.velocity.y = p_vy_vector_[idx];
+      circle.velocity.x = p_vx_vector_[idx];
+      circle.velocity.y = p_vy_vector_[idx];
 
-    obstacles_.circles.push_back(circle);
+      obstacles_.circles.push_back(circle);
+    }
   }
 
   if (p_reset_)

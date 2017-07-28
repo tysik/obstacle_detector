@@ -97,10 +97,13 @@ private:
   bool p_active_;
   bool p_copy_segments_;
 
-  double p_tracking_duration_;
   double p_loop_rate_;
   double p_sampling_time_;
   double p_sensor_rate_;
+
+  double p_fade_in_duration_;
+  double p_fade_out_duration_;
+
   double p_min_correspondence_cost_;
   double p_process_variance_;
   double p_process_rate_variance_;

@@ -44,7 +44,7 @@ namespace obstacle_detector
 class TrackedObstacle {
 public:
   TrackedObstacle(const CircleObstacle& obstacle) : obstacle_(obstacle), kf_(0, 3, 5) {
-    fade_counter_ = s_fade_counter_size_;
+    fade_out_counter_ = s_fade_counter_size_;
     initKF();
   }
 
@@ -59,7 +59,7 @@ public:
 
     obstacle_.radius = kf_.q_pred(4);
 
-    fade_counter_--;
+    fade_out_counter_--;
   }
 
   void correctState(const CircleObstacle& new_obstacle) {
@@ -77,7 +77,7 @@ public:
 
     obstacle_.radius = kf_.q_est(4);
 
-    fade_counter_ = s_fade_counter_size_;
+    fade_out_counter_ = s_fade_counter_size_;
   }
 
   void updateState() {
@@ -92,7 +92,7 @@ public:
 
     obstacle_.radius = kf_.q_est(4);
 
-    fade_counter_--;
+    fade_out_counter_--;
   }
 
   static void setSamplingTime(double tp) {
@@ -109,7 +109,7 @@ public:
     s_measurement_variance_ = measurement_var;
   }
 
-  bool hasFaded() const { return ((fade_counter_ <= 0) ? true : false); }
+  bool hasFaded() const { return ((fade_out_counter_ <= 0) ? true : false); }
   const CircleObstacle& getObstacle() const { return obstacle_; }
   const KalmanFilter& getKF() const { return kf_; }
 
@@ -137,9 +137,11 @@ private:
     kf_.q_est(4) = kf_.q_pred(4) = obstacle_.radius;
   }
 
-  CircleObstacle obstacle_;
+  int fade_in_counter_;
+  int fade_out_counter_;
+
   KalmanFilter kf_;
-  int fade_counter_;
+  CircleObstacle obstacle_;
 
   // Common variables
   static int s_fade_counter_size_;
