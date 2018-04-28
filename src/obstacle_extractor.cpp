@@ -418,7 +418,6 @@ void ObstacleExtractor::publishObstacles() {
       return;
     }
 
-    tf::Vector3 vec;
     for (Segment& s : segments_) {
       s.first_point = transformPoint(s.first_point, transform);
       s.last_point = transformPoint(s.last_point, transform);
