@@ -91,6 +91,13 @@ inline Point transformPoint(const Point point, double x, double y, double theta)
   return p;
 }
 
+inline Point transformPoint(const Point& point, const tf::StampedTransform& transform) {
+  tf::Vector3 v(point.x, point.y, 0);
+  v = transform * v;
+
+  return {v.x(), v.y()};
+}
+
 inline bool checkPointInLimits(const geometry_msgs::Point32& p, double x_min, double x_max, double y_min, double y_max) {
   if ((p.x > x_max) || (p.x < x_min) || (p.y > y_max) || (p.y < y_min))
     return false;
