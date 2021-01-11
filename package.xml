@@ -21,6 +21,7 @@
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>laser_geometry</depend>
+  <depend>armadillo</depend>
 
   <export>
     <rviz plugin="${prefix}/rviz_plugins.xml"/>

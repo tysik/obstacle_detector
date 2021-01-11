@@ -179,7 +179,7 @@ void ObstacleExtractor::groupPoints() {
   point_set.num_points = 1;
   point_set.is_visible = true;
 
-  for (PointIterator point = input_points_.begin()++; point != input_points_.end(); ++point) {
+  for (PointIterator point = ++input_points_.begin(); point != input_points_.end(); ++point) {
     double range = (*point).length();
     double distance = (*point - *point_set.end).length();
 
