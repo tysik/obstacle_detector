@@ -220,6 +220,49 @@ Provided launch files are good examples of how to use `obstacle_detector` packag
 
 For better visual effects, appropriate Rviz display for `Obstacles` messages was prepared. Via its properties, one can change the colors of the obstacles.
 
+## 5. Other interesting forks of this repository
+
+- Lots of improvements:
+
+  https://github.com/6RiverSystems/obstacle_detector/tree/6RS
+
+  Melodic:
+
+  https://github.com/6RiverSystems/obstacle_detector/tree/6RS-melodic
+  https://github.com/6RiverSystems/obstacle_detector/tree/feature/lidar-tracking
+
+- Rectangular obstacles:
+
+  https://github.com/tysik/obstacle_detector/compare/master...icsl-Jeon:obstacle_detector:master
+
+- Dynamic map subtraction, robot base velocity compensation:
+
+  https://github.com/tysik/obstacle_detector/compare/master...bangyii:obstacle_detector:master
+
+- Fix start/end of laser bug:
+
+  https://github.com/tysik/obstacle_detector/compare/master...seiga-k:obstacle_detector:master
+
+- Obstacles to PoseArray conversion for better Visualization:
+
+  https://github.com/tysik/obstacle_detector/compare/master...gaoyangu:obstacle_detector:rikirobot
+
+- More obstacle information (can it move?) publishing:
+
+  https://github.com/tysik/obstacle_detector/compare/master...Xvdgeest:obstacle_detector:master
+
+- Publishing of Polygons in addition to Segments:
+
+  https://github.com/tysik/obstacle_detector/compare/master...FelixTFD:obstacle_detector:master
+
+- Different circle merging logic:
+
+  https://github.com/tysik/obstacle_detector/compare/master...ljburtz:obstacle_detector:circle_merge_logic
+
+- Cone detection:
+
+  https://github.com/tysik/obstacle_detector/compare/master...Magnusgaertner:obstacle_detector:master
+
 Author:
 _Mateusz Przybyla_
 
