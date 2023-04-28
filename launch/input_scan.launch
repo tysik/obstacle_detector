@@ -1,0 +1,67 @@
+<!-- Demonstation of obstacle detector -->
+<launch>
+
+  <node name="urg_node" pkg="urg_node" type="urg_node" output="screen">
+    <param name="ip_address" value=""/>
+    <param name="serial_port" value="/dev/ttyACM0"/>
+    <param name="serial_baud" value="115200"/>
+    <param name="frame_id" value="laser"/>
+    <param name="calibrate_time" value="true"/>
+    <param name="publish_intensity" value="false"/>
+    <param name="publish_multiecho" value="false"/>
+    <param name="angle_min" value="-1.5707963"/>
+    <param name="angle_max" value="1.5707963"/>
+  </node>
+
+  <node name="map_to_robot" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map robot"/>
+  <node name="map_to_laser" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 map laser"/>
+  <!-- <node name="scanner_base_to_front_scanner" pkg="tf2_ros" type="static_transform_publisher" args="0.23565 -0.0005 0.06795 0 0 0 robot front_scanner"/>
+  <node name="scanner_base_to_rear_scanner" pkg="tf2_ros" type="static_transform_publisher" args="-0.23832 0.00542 0.09888 3.141592 0 0 robot rear_scanner"/> -->
+
+  <node name="nodelet_manager" pkg="nodelet" type="nodelet" args="manager" output="screen">
+    <param name="num_worker_threads" value="20"/>
+  </node>
+
+  <node name="obstacle_extractor" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleExtractor nodelet_manager">
+    <param name="active"               value="true"/>
+    <param name="use_scan"             value="true"/>
+    <param name="use_pcl"              value="false"/>
+
+    <param name="use_split_and_merge"    value="true"/>
+    <param name="circles_from_visibles"  value="true"/>
+    <param name="discard_converted_segments" value="true"/>
+    <param name="transform_coordinates"  value="true"/>
+
+    <param name="min_group_points"     value="5"/>
+
+    <param name="max_group_distance"   value="0.1"/>
+    <param name="distance_proportion"  value="0.00628"/>
+    <param name="max_split_distance"   value="0.2"/>
+    <param name="max_merge_separation" value="0.2"/>
+    <param name="max_merge_spread"     value="0.2"/>
+    <param name="max_circle_radius"    value="0.6"/>
+    <param name="radius_enlargement"   value="0.3"/>
+
+    <param name="frame_id"             value="map"/>
+  </node>
+
+  <node name="obstacle_tracker" pkg="nodelet" type="nodelet" args="load obstacle_detector/ObstacleTracker nodelet_manager">
+    <param name="active"                  value="true"/>
+
+    <param name="loop_rate"               value="100.0"/>
+    <param name="tracking_duration"       value="2.0"/>
+    <param name="min_correspondence_cost" value="0.6"/>
+    <param name="std_correspondence_dev"  value="0.15"/>
+    <param name="process_variance"        value="0.1"/>  
+    <param name="process_rate_variance"   value="0.1"/>  
+    <param name="measurement_variance"    value="1.0"/>  
+
+    <param name="frame_id"                value="map"/>
+
+    <remap from="tracked_obstacles" to="obstacles"/>
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find obstacle_detector)/resources/obstacle_detector.rviz"/>
+
+</launch>
+<!-- -->
